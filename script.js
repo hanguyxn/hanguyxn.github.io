@@ -75,10 +75,10 @@
   // ═══════════════════════════════════════════════
   const phrases = [
     'Full-Stack Developer',
-    'Vue 3 Specialist',
-    'System Architect',
-    'TypeScript Enthusiast',
-    'Problem Solver',
+    'EdTech Builder',
+    'Real-time Systems',
+    'Vue.js + NestJS',
+    'Backend Architect',
   ];
   const typedEl = document.getElementById('typed-text');
   let phraseIdx = 0;

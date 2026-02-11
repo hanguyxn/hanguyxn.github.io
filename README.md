@@ -2,10 +2,10 @@
 
 # 👋 Hi, I'm Ha
 
-**Web Developer / Full-Stack Developer**
+**Full-Stack Developer · EdTech**
 
-Building scalable web applications with modern tech stacks.
-Passionate about EdTech, real-time systems, and backend architecture.
+Software Developer at an EdTech company, building LMS and 360° Assessment platforms.
+Passionate about real-time systems, backend architecture, and performance optimization.
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-hunre.dev-00d4ff?style=for-the-badge&logo=google-chrome&logoColor=white)](https://hunre.dev)
 [![GitHub](https://img.shields.io/badge/GitHub-hanguyxn-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/hanguyxn)
@@ -16,11 +16,11 @@ Passionate about EdTech, real-time systems, and backend architecture.
 
 ## 🧑‍💻 About Me
 
-- 🔭 Currently working as a **Software Developer** at an **EdTech company**
+- 🔭 Currently a **Software Developer** at an **EdTech company**
 - 🚀 Building **LMS** and **360° Assessment Platform** for enterprise clients
 - ⚡ Led development of a **real-time Learning Assistant** using **Server-Sent Events (SSE)**
-- 🎯 Focused on **performance optimization**, **clean architecture**, and **developer experience**
-- 🌱 Always exploring: real-time systems, event-driven architecture, and backend scaling patterns
+- 🎯 Focused on **backend architecture**, **real-time systems**, and **performance optimization**
+- 💎 Graduated with **Jewelry E-commerce Website** — built with PHP MVC, MoMo payment, and SMTP
 
 ---
 
@@ -47,47 +47,45 @@ Passionate about EdTech, real-time systems, and backend architecture.
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
 ![Apache Kafka](https://img.shields.io/badge/Kafka-231F20?style=flat-square&logo=apachekafka&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 
 **DevOps & Tools**
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
 
 ---
 
 ## 🚀 Featured Projects
 
-### 🎓 LMS Platform
+### 📚 LMS Platform
 
-> Enterprise learning management system with course management, examination engine, and attendance tracking.
+> Enterprise learning management system with a real-time Learning Assistant powered by SSE.
 
-- **Stack:** Vue 3 · NestJS · TypeScript · Redis · SSE
-- Real-time Learning Assistant with Server-Sent Events
-- VOD/blended learning · Exam retake logic · Mobile-responsive UI
+- **Stack:** Vue.js · NestJS · MySQL · Redis · SSE
+- Course management · Examination engine · Attendance tracking · Mobile-responsive UI
 
-### 📊 360° Assessment Platform
+### 🎯 360° Assessment Platform
 
 > Multi-dimensional employee evaluation system for enterprise HR workflows.
 
-- **Stack:** Vue 3 · NestJS · MySQL · Kafka
-- Event-driven architecture for real-time data processing
+- **Stack:** Vue.js · NestJS · MySQL · Kafka · Tailwind CSS
+- Event-driven architecture · Reporting dashboards · Role-based evaluation
 
 ### 💎 Jewelry E-commerce Website
 
-> Full-featured e-commerce platform built as a graduation project.
+> Full-featured e-commerce platform — graduation project.
 
 - **Stack:** PHP MVC · MySQL · MoMo Payment · SMTP
 - Product catalog · Shopping cart · Order management · Email notifications
 
-### 🤖 Workflow Automation
+### ⚡ Real-time Learning Assistant
 
-> Event-driven automation pipelines with bot integrations and AI-powered processing.
+> Live learning assistant feature with SSE for real-time content streaming.
 
-- **Stack:** n8n · Telegram API · GPT · Webhooks · Node.js
+- **Stack:** NestJS · SSE · Redis · Vue.js · TypeScript
+- Interactive Q&A · Instant feedback delivery
 
 ---
 
@@ -105,7 +103,7 @@ Passionate about EdTech, real-time systems, and backend architecture.
 
 ## 💡 Interests
 
-`EdTech` · `Real-time Systems` · `Backend Architecture` · `Performance Optimization` · `Event-Driven Design` · `Developer Experience`
+`EdTech` · `Real-time Systems` · `Backend Architecture` · `Performance Optimization` · `Event-Driven Design`
 
 ---
 
