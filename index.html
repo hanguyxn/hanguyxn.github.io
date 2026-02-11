@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ha Nguyen — Full-Stack Developer</title>
+    <meta
+      name="description"
+      content="Full-Stack Developer specializing in Vue 3, TypeScript, NestJS, and cloud-native architectures. Building scalable, high-performance web applications."
+    />
+    <meta name="author" content="Ha Nguyen" />
+    <meta
+      name="keywords"
+      content="Ha Nguyen, Full-Stack Developer, Vue 3, TypeScript, NestJS, Docker, Portfolio"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Ha Nguyen — Full-Stack Developer" />
+    <meta
+      property="og:description"
+      content="Full-Stack Developer specializing in Vue 3, TypeScript, NestJS, and cloud-native architectures."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hunre.dev" />
+
+    <!-- Favicon (emoji-based inline SVG) -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ═══════════════ PARTICLE CANVAS ═══════════════ -->
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <!-- ═══════════════ NAVIGATION ═══════════════ -->
+    <nav id="navbar" class="navbar">
+      <div class="nav-container">
+        <a href="#hero" class="nav-logo">
+          <span class="logo-bracket">{</span> H
+          <span class="logo-bracket">}</span>
+        </a>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#skills" class="nav-link">Skills</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#experience" class="nav-link">Experience</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <button
+          class="nav-toggle"
+          id="nav-toggle"
+          aria-label="Toggle navigation"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <main>
+      <!-- ═══════════════ HERO ═══════════════ -->
+      <section id="hero" class="hero">
+        <div class="hero-content">
+          <p class="hero-greeting animate-fade-up">Hello, I'm</p>
+          <h1 class="hero-name animate-fade-up delay-1">Ha Nguyen</h1>
+          <p class="hero-title animate-fade-up delay-2">
+            <span class="typed-prefix">~/</span>
+            <span class="typed-text" id="typed-text"></span>
+            <span class="typed-cursor">|</span>
+          </p>
+          <p class="hero-description animate-fade-up delay-3">
+            I architect &amp; build scalable web applications with modern tech
+            stacks. Passionate about clean code, system design, and developer
+            experience.
+          </p>
+          <div class="hero-actions animate-fade-up delay-4">
+            <a href="#projects" class="btn btn-primary">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 3h12l4 6-10 13L2 9z" />
+              </svg>
+              View Projects
+            </a>
+            <a
+              href="https://github.com/hanguyxn"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-ghost"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+              </svg>
+              GitHub
+            </a>
+          </div>
+          <div class="hero-stats animate-fade-up delay-5">
+            <div class="stat">
+              <span class="stat-value" data-count="3">0</span
+              ><span class="stat-suffix">+</span>
+              <span class="stat-label">Years Exp</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" data-count="10">0</span
+              ><span class="stat-suffix">+</span>
+              <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" data-count="5">0</span
+              ><span class="stat-suffix">+</span>
+              <span class="stat-label">Tech Stack</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual animate-fade-up delay-3">
+          <div class="code-window">
+            <div class="code-header">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="code-title">developer.ts</span>
+            </div>
+            <pre
+              class="code-body"
+            ><code><span class="kw">interface</span> <span class="type">Developer</span> {
+  <span class="prop">name</span>: <span class="str">"Ha Nguyen"</span>;
+  <span class="prop">role</span>: <span class="str">"Full-Stack Developer"</span>;
+  <span class="prop">stack</span>: <span class="type">string</span>[];
+  <span class="prop">passion</span>: <span class="str">"Building things"</span>;
+}
+
+<span class="kw">const</span> <span class="var">me</span>: <span class="type">Developer</span> = {
+  <span class="prop">name</span>: <span class="str">"Ha Nguyen"</span>,
+  <span class="prop">role</span>: <span class="str">"Full-Stack Developer"</span>,
+  <span class="prop">stack</span>: [
+    <span class="str">"Vue 3"</span>, <span class="str">"TypeScript"</span>,
+    <span class="str">"NestJS"</span>, <span class="str">"Docker"</span>
+  ],
+  <span class="prop">passion</span>: <span class="str">"Building things"</span>,
+};</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ ABOUT ═══════════════ -->
+      <section id="about" class="section about">
+        <div class="container">
+          <h2 class="section-title reveal">
+            <span class="section-number">01.</span> About Me
+          </h2>
+          <div class="about-grid">
+            <div class="about-text reveal">
+              <p>
+                I'm a <strong>Full-Stack Developer</strong> based in Vietnam,
+                focused on building robust, scalable web applications using
+                modern frameworks. I specialize in the
+                <strong>Vue + NestJS</strong> ecosystem and love turning complex
+                problems into elegant, maintainable solutions.
+              </p>
+              <p>
+                My approach combines <strong>systems thinking</strong> with a
+                passion for developer experience — I believe great architecture
+                should be both powerful and a pleasure to work with.
+              </p>
+              <p>
+                When I'm not coding, I explore cloud-native patterns, contribute
+                to open source, and experiment with AI/ML integrations to push
+                what web apps can do.
+              </p>
+            </div>
+            <div class="about-highlights reveal">
+              <div class="highlight-card">
+                <div class="highlight-icon">⚡</div>
+                <h3>Performance-First</h3>
+                <p>
+                  Optimized for speed — sub-100ms APIs, lazy loading, efficient
+                  queries.
+                </p>
+              </div>
+              <div class="highlight-card">
+                <div class="highlight-icon">🏗️</div>
+                <h3>Architecture</h3>
+                <p>
+                  Clean, modular codebases following SOLID principles and
+                  domain-driven design.
+                </p>
+              </div>
+              <div class="highlight-card">
+                <div class="highlight-icon">🔐</div>
+                <h3>Security</h3>
+                <p>
+                  Zero-trust mindset — RBAC, input validation, secure headers,
+                  OWASP compliance.
+                </p>
+              </div>
+              <div class="highlight-card">
+                <div class="highlight-icon">🚀</div>
+                <h3>DevOps</h3>
+                <p>
+                  Docker, CI/CD pipelines, infrastructure as code, automated
+                  deployments.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ SKILLS ═══════════════ -->
+      <section id="skills" class="section skills">
+        <div class="container">
+          <h2 class="section-title reveal">
+            <span class="section-number">02.</span> Tech Stack
+          </h2>
+          <div class="skills-grid">
+            <!-- Frontend -->
+            <div class="skill-category reveal">
+              <div class="skill-category-header">
+                <span class="skill-icon">🎨</span>
+                <h3>Frontend</h3>
+              </div>
+              <div class="skill-tags">
+                <span class="skill-tag">Vue 3</span>
+                <span class="skill-tag">TypeScript</span>
+                <span class="skill-tag">Vite</span>
+                <span class="skill-tag">TailwindCSS</span>
+                <span class="skill-tag">Pinia</span>
+                <span class="skill-tag">Nuxt</span>
+                <span class="skill-tag">HTML5 / CSS3</span>
+                <span class="skill-tag">GSAP</span>
+              </div>
+            </div>
+            <!-- Backend -->
+            <div class="skill-category reveal">
+              <div class="skill-category-header">
+                <span class="skill-icon">⚙️</span>
+                <h3>Backend</h3>
+              </div>
+              <div class="skill-tags">
+                <span class="skill-tag">NestJS</span>
+                <span class="skill-tag">Node.js</span>
+                <span class="skill-tag">Express</span>
+                <span class="skill-tag">PostgreSQL</span>
+                <span class="skill-tag">Prisma</span>
+                <span class="skill-tag">Redis</span>
+                <span class="skill-tag">REST API</span>
+                <span class="skill-tag">GraphQL</span>
+              </div>
+            </div>
+            <!-- DevOps -->
+            <div class="skill-category reveal">
+              <div class="skill-category-header">
+                <span class="skill-icon">☁️</span>
+                <h3>DevOps & Cloud</h3>
+              </div>
+              <div class="skill-tags">
+                <span class="skill-tag">Docker</span>
+                <span class="skill-tag">Nginx</span>
+                <span class="skill-tag">Linux</span>
+                <span class="skill-tag">GitHub Actions</span>
+                <span class="skill-tag">CI/CD</span>
+                <span class="skill-tag">AWS S3</span>
+                <span class="skill-tag">Vercel</span>
+                <span class="skill-tag">Railway</span>
+              </div>
+            </div>
+            <!-- Tools -->
+            <div class="skill-category reveal">
+              <div class="skill-category-header">
+                <span class="skill-icon">🛠️</span>
+                <h3>Tools & Methods</h3>
+              </div>
+              <div class="skill-tags">
+                <span class="skill-tag">Git</span>
+                <span class="skill-tag">VS Code</span>
+                <span class="skill-tag">Figma</span>
+                <span class="skill-tag">Postman</span>
+                <span class="skill-tag">Jira</span>
+                <span class="skill-tag">Agile / Scrum</span>
+                <span class="skill-tag">n8n</span>
+                <span class="skill-tag">AI/ML</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ PROJECTS ═══════════════ -->
+      <section id="projects" class="section projects">
+        <div class="container">
+          <h2 class="section-title reveal">
+            <span class="section-number">03.</span> Featured Projects
+          </h2>
+          <div class="projects-grid">
+            <!-- Project 1 -->
+            <article class="project-card reveal">
+              <div class="project-card-glow"></div>
+              <div class="project-header">
+                <svg
+                  class="project-icon"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+                <div class="project-links">
+                  <a
+                    href="https://github.com/hanguyxn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View source"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <h3 class="project-title">CRM System</h3>
+              <p class="project-description">
+                Production-ready CRM with role-based access control,
+                multi-tenant architecture, customer management, deal tracking,
+                and real-time dashboards.
+              </p>
+              <div class="project-tech">
+                <span>Vue 3</span><span>NestJS</span><span>PostgreSQL</span
+                ><span>Prisma</span><span>Docker</span>
+              </div>
+            </article>
+
+            <!-- Project 2 -->
+            <article class="project-card reveal">
+              <div class="project-card-glow"></div>
+              <div class="project-header">
+                <svg
+                  class="project-icon"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+                <div class="project-links">
+                  <a
+                    href="https://github.com/hanguyxn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View source"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <h3 class="project-title">LMS Platform</h3>
+              <p class="project-description">
+                Enterprise learning management system with course management,
+                VOD/blended learning, examination engine, attendance tracking,
+                and mobile-responsive UI.
+              </p>
+              <div class="project-tech">
+                <span>Vue 3</span><span>NestJS</span><span>TypeScript</span
+                ><span>Redis</span><span>S3</span>
+              </div>
+            </article>
+
+            <!-- Project 3 -->
+            <article class="project-card reveal">
+              <div class="project-card-glow"></div>
+              <div class="project-header">
+                <svg
+                  class="project-icon"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                <div class="project-links">
+                  <a
+                    href="https://github.com/hanguyxn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View source"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <h3 class="project-title">Image Processing Service</h3>
+              <p class="project-description">
+                High-performance image pipeline with on-the-fly resizing, format
+                conversion, CDN-backed delivery, and S3 storage integration
+                using Sharp.
+              </p>
+              <div class="project-tech">
+                <span>Node.js</span><span>Sharp</span><span>AWS S3</span
+                ><span>Docker</span><span>Nginx</span>
+              </div>
+            </article>
+
+            <!-- Project 4 -->
+            <article class="project-card reveal">
+              <div class="project-card-glow"></div>
+              <div class="project-header">
+                <svg
+                  class="project-icon"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+                <div class="project-links">
+                  <a
+                    href="https://github.com/hanguyxn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View source"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <h3 class="project-title">Workflow Automation</h3>
+              <p class="project-description">
+                Event-driven automation pipelines with n8n, Telegram bot
+                integrations, GPT-powered lead qualification, and webhook-based
+                triggers.
+              </p>
+              <div class="project-tech">
+                <span>n8n</span><span>Telegram API</span><span>GPT</span
+                ><span>Webhooks</span><span>Node.js</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ EXPERIENCE ═══════════════ -->
+      <section id="experience" class="section experience">
+        <div class="container">
+          <h2 class="section-title reveal">
+            <span class="section-number">04.</span> Experience
+          </h2>
+          <div class="timeline">
+            <div class="timeline-item reveal">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-header">
+                  <h3>Full-Stack Developer</h3>
+                  <span class="timeline-date">2023 — Present</span>
+                </div>
+                <p class="timeline-company">Software Company</p>
+                <ul class="timeline-tasks">
+                  <li>
+                    Architected and built enterprise LMS platform serving
+                    thousands of users
+                  </li>
+                  <li>
+                    Designed multi-tenant CRM with RBAC, real-time analytics,
+                    and event-driven architecture
+                  </li>
+                  <li>
+                    Implemented CI/CD pipelines with Docker, GitHub Actions, and
+                    automated deployments
+                  </li>
+                  <li>
+                    Led frontend development with Vue 3, TypeScript, and
+                    performance optimization
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="timeline-item reveal">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-header">
+                  <h3>Web Developer</h3>
+                  <span class="timeline-date">2022 — 2023</span>
+                </div>
+                <p class="timeline-company">Freelance & Projects</p>
+                <ul class="timeline-tasks">
+                  <li>
+                    Built full-stack web applications for clients using Vue and
+                    Node.js
+                  </li>
+                  <li>
+                    Developed image processing microservice with Sharp and AWS
+                    S3
+                  </li>
+                  <li>
+                    Created automation workflows with n8n and Telegram
+                    integrations
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ CONTACT ═══════════════ -->
+      <section id="contact" class="section contact">
+        <div class="container">
+          <h2 class="section-title reveal">
+            <span class="section-number">05.</span> Get In Touch
+          </h2>
+          <div class="contact-content reveal">
+            <p class="contact-text">
+              I'm always open to discussing new projects, creative ideas, or
+              opportunities to be part of something great. Feel free to reach
+              out!
+            </p>
+            <div class="contact-links">
+              <a
+                href="https://github.com/hanguyxn"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-link"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                  />
+                </svg>
+                <span>github.com/hanguyxn</span>
+              </a>
+              <a href="https://hunre.dev" class="contact-link">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                  />
+                </svg>
+                <span>hunre.dev</span>
+              </a>
+              <a href="mailto:hello@hunre.dev" class="contact-link">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                  />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <span>hello@hunre.dev</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer class="footer">
+      <div class="container">
+        <p>Designed & Built by <strong>Ha Nguyen</strong></p>
+        <p class="footer-sub">© 2026 — Built with ❤️ and vanilla code</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
