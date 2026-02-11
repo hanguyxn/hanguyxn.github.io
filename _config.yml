@@ -1,3 +1,7 @@
 theme: jekyll-theme-minimal
-title: Octocat's homepage
-description: Bookmark this to keep an eye on my project updates!
+title: Ha Nguyen
+description: >
+  Full-stack Developer  
+  Vue 3 • TypeScript • NestJS • Docker
+logo: /assets/avatar.png
+show_downloads: false
