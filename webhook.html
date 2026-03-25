@@ -1,226 +1,224 @@
-import React, { useState, useEffect } from 'react';
-import { Book, Code, List, ChevronRight, Copy, Check, Webhook, Info, Terminal } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhook Documentation</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Custom animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 0.3s ease-out forwards;
+    }
 
-// === DỮ LIỆU ĐƯỢC CUNG CẤP TỪ BẠN ===
-const webhookData = [
-  {
-    "id": 11,
-    "section_title": "II.3.1. Thông tin Khóa học",
-    "code": "COURSE_PUBLISHED",
-    "event_name": "course.published",
-    "display_name": "Khóa học được phát hành",
-    "description": "Sự kiện được kích hoạt khi khóa học được publish và phát sinh payload metadata khóa học",
-    "category": "COURSE",
-    "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\"type\": \"string\", \"enum\": [\"COURSE_PUBLISHED\"]},\n    \"entityId\": {\"type\": \"string\"},\n    \"companyId\": {\"type\": \"integer\"},\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"code\": {\"type\": \"string\"},\n        \"name\": {\"type\": \"string\"},\n        \"duration\": {\"type\": \"number\", \"description\": \"Duration in minutes\"},\n        \"program\": {\"type\": \"string\"},\n        \"programName\": {\"type\": \"string\"},\n        \"trainingForm\": {\"type\": \"string\"},\n        \"trainingMethod\": {\"type\": \"string\"},\n        \"trainingDuration\": {\"type\": \"string\"},\n        \"trainingProvider\": {\"type\": \"string\"},\n        \"languageProvider\": {\"type\": \"string\"},\n        \"trainingPlan\": {\"type\": \"string\"},\n        \"trainingPlanName\": {\"type\": \"string\"},\n        \"trainingCurriculum\": {\"type\": \"string\"},\n        \"rationale\": {\"type\": \"string\"},\n        \"teacher\": {\"type\": \"string\"},\n        \"object\": {\"type\": \"string\"},\n        \"location\": {\"type\": \"string\"},\n        \"startTime\": {\"type\": \"string\", \"format\": \"date-time\"},\n        \"endTime\": {\"type\": \"string\", \"format\": \"date-time\"},\n        \"totalDuration\": {\"type\": \"number\", \"description\": \"Total duration in minutes\"},\n        \"learnerCountMin\": {\"type\": \"number\"},\n        \"learnerCountMax\": {\"type\": \"number\"}\n      },\n      \"required\": [\n        \"code\",\n        \"name\",\n        \"duration\",\n        \"startTime\",\n        \"endTime\",\n        \"totalDuration\",\n        \"learnerCountMin\",\n        \"learnerCountMax\"\n      ]\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n}\n",
-    "payload_example": "{\n  \"eventType\": \"COURSE_PUBLISHED\",\n  \"entityId\": \"101\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"code\": \"COURSE-001\",\n    \"name\": \"Kỹ năng giao tiếp nội bộ\",\n    \"duration\": 120,\n    \"program\": \"TP-2026\",\n    \"programName\": \"Khung đào tạo quản lý 2026\",\n    \"trainingForm\": \"offline\",\n    \"trainingMethod\": \"classroom\",\n    \"trainingDuration\": 2,\n    \"trainingProvider\": \"Edtexco Academy\",\n    \"languageProvider\": \"vi\",\n    \"trainingPlan\": \"Plan code\",\n    \"trainingPlanName\": \"Plan name\",\n    \"trainingCurriculum\": \"curriculum-2026\",\n    \"rationale\": \"Nâng cao kỹ năng phối hợp liên phòng ban\",\n    \"teacher\": \"Nguyễn Văn A\",\n    \"object\": \"Nhân sự quản lý cấp trung\",\n    \"location\": \"HCM Campus\",\n    \"startTime\": \"2026-03-17T08:00:00Z\",\n    \"endTime\": \"2026-03-17T10:00:00Z\",\n    \"totalDuration\": 120,\n    \"learnerCountMin\": 10,\n    \"learnerCountMax\": 30\n  },\n  \"previousData\": null,\n  \"metadata\": null,\n  \"dataType\": \"CourseWebhookData\"\n}\n"
-  },
-  {
-    "id": 12,
-    "section_title": "II.3.3. Danh sách chi phí khóa học",
-    "code": "COURSE_COST_UPDATED",
-    "event_name": "course.cost.updated",
-    "display_name": "Chi phí khóa học được cập nhật",
-    "description": "Sự kiện được kích hoạt khi danh sách chi phí của khóa học được đồng bộ sang webhook",
-    "category": "COURSE",
-    "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\"type\": \"string\", \"enum\": [\"COURSE_COST_UPDATED\"]},\n    \"entityId\": {\"type\": \"string\"},\n    \"companyId\": {\"type\": \"integer\"},\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"courseId\": {\"type\": \"integer\"},\n        \"courseCode\": {\"type\": \"string\"},\n        \"courseName\": {\"type\": \"string\"},\n        \"costs\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"costCode\": {\"type\": \"string\"},\n              \"costName\": {\"type\": \"string\"},\n              \"value\": {\"type\": \"number\"},\n              \"unit\": {\"type\": \"string\"},\n              \"note\": {\"type\": \"string\"}\n            },\n            \"required\": [\"costCode\", \"costName\", \"value\", \"unit\", \"note\"]\n          }\n        }\n      },\n      \"required\": [\"courseId\", \"courseCode\", \"courseName\", \"costs\"]\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n}\n",
-    "payload_example": "{\n  \"eventType\": \"COURSE_COST_UPDATED\",\n  \"entityId\": \"101\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"courseId\": 101,\n    \"courseCode\": \"COURSE-001\",\n    \"courseName\": \"Kỹ năng giao tiếp nội bộ\",\n    \"costs\": [\n      {\n        \"costCode\": \"1\",\n        \"costName\": \"Giảng viên\",\n        \"value\": 5000000,\n        \"unit\": \"vnd\",\n        \"note\": \"Chi phí thuê giảng viên\"\n      },\n      {\n        \"costCode\": \"2\",\n        \"costName\": \"Phòng học\",\n        \"value\": 2000000,\n        \"unit\": \"vnd\",\n        \"note\": \"Chi phí thuê phòng học\"\n      }\n    ]\n  },\n  \"previousData\": null,\n  \"metadata\": null,\n  \"dataType\": \"CourseCostListWebhookData\"\n}\n"
-  },
-  {
-    "id": 13,
-    "section_title": "II.3.2. Danh sách học viên tham gia khóa học",
-    "code": "COURSE_STUDENT_LIST_UPDATED",
-    "event_name": "course.student.list.updated",
-    "display_name": "Danh sách học viên cập nhật",
-    "description": "Sự kiện được kích hoạt khi danh sách học viên của khóa học được đồng bộ sang webhook",
-    "category": "COURSE",
-    "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\"type\": \"string\", \"enum\": [\"COURSE_STUDENT_LIST_UPDATED\"]},\n    \"entityId\": {\"type\": \"string\"},\n    \"companyId\": {\"type\": \"integer\"},\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"courseId\": {\"type\": \"integer\"},\n        \"courseCode\": {\"type\": \"string\"},\n        \"courseName\": {\"type\": \"string\"},\n        \"students\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"userCode\": {\"type\": \"string\"},\n              \"userName\": {\"type\": \"string\"},\n              \"mandatoryCompletionDate\": {\"type\": \"string\", \"format\": \"date-time\"},\n              \"reason\": {\"type\": \"string\"},\n              \"note\": {\"type\": \"string\"}\n            },\n            \"required\": [\"userCode\", \"userName\"]\n          }\n        }\n      },\n      \"required\": [\"courseId\", \"courseCode\", \"courseName\", \"students\"]\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n}\n",
-    "payload_example": "{\n  \"eventType\": \"COURSE_STUDENT_LIST_UPDATED\",\n  \"entityId\": \"101\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"courseId\": 101,\n    \"courseCode\": \"COURSE-001\",\n    \"courseName\": \"Kỹ năng giao tiếp nội bộ\",\n    \"students\": [\n      {\n        \"userCode\": \"EMP001\",\n        \"userName\": \"Nguyễn Văn A\",\n        \"mandatoryCompletionDate\": \"2026-03-31T17:00:00Z\",\n        \"reason\": \"Bắt buộc theo kế hoạch đào tạo\",\n        \"note\": \"Ưu tiên hoàn thành trước quý 2\"\n      },\n      {\n        \"userCode\": \"EMP002\",\n        \"userName\": \"Trần Thị B\",\n        \"mandatoryCompletionDate\": null,\n        \"reason\": \"Đăng ký tự nguyện\",\n        \"note\": null\n      }\n    ]\n  },\n  \"previousData\": null,\n  \"metadata\": null,\n  \"dataType\": \"CourseStudentListWebhookData\"\n}\n"
-  },
-  {
-    "id": 14,
-    "section_title": "II.3.4. Kết quả điểm danh của học viên",
-    "code": "STUDENT_ATTENDANCE",
-    "event_name": "course.student.attendance",
-    "display_name": "Học viên điểm danh",
-    "description": "Sự kiện được kích hoạt khi hệ thống ghi nhận lượt attendance đầu tiên của học viên trong khóa học",
-    "category": "COURSE",
-    "payload_schema": "{\n              \"type\": \"object\",\n              \"properties\": {\n                \"eventType\": {\"type\": \"string\", \"enum\": [\"STUDENT_ATTENDANCE\"]},\n                \"entityId\": {\"type\": \"string\"},\n                \"companyId\": {\"type\": \"integer\"},\n                \"currentData\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"courseCode\": {\"type\": \"string\"},\n                    \"courseName\": {\"type\": \"string\"},\n                    \"userCode\": {\"type\": \"string\"},\n                    \"userName\": {\"type\": \"string\"},\n                    \"courseId\": {\"type\": \"integer\"},\n                    \"date\": {\"type\": \"string\", \"format\": \"date-time\"},\n                    \"status\": {\"type\": \"string\"}\n                  },\n                  \"required\": [\"courseCode\", \"courseName\", \"userCode\", \"userName\", \"courseId\", \"date\", \"status\"]\n                }\n              },\n              \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n            }",
-    "payload_example": "{\n              \"eventType\": \"STUDENT_ATTENDANCE\",\n              \"entityId\": \"501\",\n              \"companyId\": 1,\n              \"currentData\": {\n                \"courseCode\": \"CRS001\",\n                \"courseName\": \"Ky nang ban hang co ban\",\n                \"userCode\": \"E001\",\n                \"userName\": \"Tran Thi B\",\n                \"courseId\": 1001,\n                \"date\": \"2026-03-18T08:30:00.000Z\",\n                \"status\": \"PRESENT\"\n              },\n              \"previousData\": null,\n              \"metadata\": null,\n              \"dataType\": \"CourseStudentAttendanceWebhookData\"\n            }"
-  },
-  {
-    "id": 15,
-    "section_title": "II.3.5. Kết quả học tập của học viên",
-    "code": "STUDENT_COMPLETED",
-    "event_name": "course.student.completed",
-    "display_name": "Học viên hoàn thành khóa học",
-    "description": "Sự kiện được kích hoạt khi hệ thống ghi nhận học viên hoàn thành khóa học",
-    "category": "COURSE",
-    "payload_schema": "{\n              \"type\": \"object\",\n              \"properties\": {\n                \"eventType\": {\"type\": \"string\", \"enum\": [\"STUDENT_COMPLETED\"]},\n                \"entityId\": {\"type\": \"string\"},\n                \"companyId\": {\"type\": \"integer\"},\n                \"currentData\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"courseId\": {\"type\": \"integer\"},\n                    \"courseCode\": {\"type\": \"string\"},\n                    \"courseName\": {\"type\": \"string\"},\n                    \"date\": {\"type\": \"string\", \"format\": \"date-time\"},\n                    \"status\": {\"type\": \"string\"},\n                    \"userCode\": {\"type\": \"string\"},\n                    \"userName\": {\"type\": \"string\"},\n                    \"withGrade\": {\"type\": \"boolean\"},\n                    \"score\": {\"type\": \"number\"},\n                    \"rankingLevel\": {\"type\": \"string\"}\n                  },\n                  \"required\": [\"courseId\", \"courseCode\", \"courseName\", \"date\", \"status\", \"userCode\", \"userName\", \"withGrade\", \"score\", \"rankingLevel\"]\n                }\n              },\n              \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n            }",
-    "payload_example": "{\n              \"eventType\": \"STUDENT_COMPLETED\",\n              \"entityId\": \"501\",\n              \"companyId\": 1,\n              \"currentData\": {\n                \"courseId\": 1001,\n                \"courseCode\": \"CRS001\",\n                \"courseName\": \"Ky nang ban hang co ban\",\n                \"date\": \"2026-03-19T09:00:00.000Z\",\n                \"status\": \"completed\",\n                \"userCode\": \"E001\",\n                \"userName\": \"Tran Thi B\",\n                \"withGrade\": true,\n                \"score\": 8.5,\n                \"rankingLevel\": \"A\"\n              },\n              \"previousData\": null,\n              \"metadata\": null,\n              \"dataType\": \"CourseStudentCompletedWebhookData\"\n            }"
-  },
-  {
-    "id": 16,
-    "section_title": "Kết quả đánh giá khóa học của học viên theo từng tiêu chí của khóa học",
-    "code": "STUDENT_PLAN",
-    "event_name": "course.student.plan",
-    "display_name": "Đánh giá khóa học của học viên",
-    "description": "Sự kiện được kích hoạt khi học viên hoàn thành kế hoạch hành động, đánh giá các tiêu chí và quản lý đánh giá",
-    "category": "COURSE",
-    "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\n      \"type\": \"string\",\n      \"enum\": [\"STUDENT_PLAN\"]\n    },\n    \"entityId\": {\n      \"type\": \"string\"\n    },\n    \"companyId\": {\n      \"type\": \"integer\"\n    },\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"courseId\": {\n          \"type\": \"integer\"\n        },\n        \"courseCode\": {\n          \"type\": \"string\"\n        },\n        \"courseName\": {\n          \"type\": \"string\"\n        },\n        \"date\": {\n          \"type\": \"string\",\n          \"format\": \"date-time\"\n        },\n        \"status\": {\n          \"type\": \"string\",\n          \"enum\": [\"completed\"]\n        },\n        \"userCode\": {\n          \"type\": \"string\"\n        },\n        \"userName\": {\n          \"type\": \"string\"\n        },\n        \"assessmentType\": {\n          \"type\": \"string\",\n          \"enum\": [\"manager\", \"employee\"]\n        },\n        \"criteria\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"code\": {\n                \"type\": \"string\"\n              },\n              \"name\": {\n                \"type\": \"string\"\n              },\n              \"scoreBefore\": {\n                \"type\": \"number\"\n              },\n              \"scoreAfter\": {\n                \"type\": \"number\"\n              }\n            },\n            \"required\": [\"code\"]\n          }\n        }\n      },\n      \"required\": [\n        \"courseId\",\n        \"courseCode\",\n        \"courseName\",\n        \"date\",\n        \"status\",\n        \"userCode\",\n        \"userName\",\n        \"assessmentType\"\n      ]\n    },\n    \"previousData\": {\n      \"type\": [\"object\", \"null\"]\n    },\n    \"metadata\": {\n      \"type\": [\"object\", \"null\"]\n    },\n    \"dataType\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"companyId\", \"currentData\"]\n}\n",
-    "payload_example": "{\n  \"eventType\": \"STUDENT_PLAN\",\n  \"entityId\": \"502\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"courseId\": 1001,\n    \"courseCode\": \"CRS001\",\n    \"courseName\": \"Ky nang ban hang co ban\",\n    \"date\": \"2026-03-19T10:15:00.000Z\",\n    \"status\": \"completed\",\n    \"userCode\": \"E001\",\n    \"userName\": \"Tran Thi B\",\n    \"assessmentType\": \"manager\",\n    \"criteria\": [\n      {\n        \"code\": \"target_fulfillment\",\n        \"name\": \"Muc do dap ung muc tieu dat ra truoc khi dao tao\",\n        \"scoreBefore\": 6,\n        \"scoreAfter\": 8.5\n      },\n      {\n        \"code\": \"knowledge_application\",\n        \"name\": \"Muc do ap dung kien thuc dao tao de cai tien cong viec\",\n        \"scoreBefore\": 5.5,\n        \"scoreAfter\": 7.8\n      },\n      {\n        \"code\": \"skill_improvement\",\n        \"name\": \"Muc do thay doi ky nang, nang luc cong viec\",\n        \"scoreBefore\": 6.5,\n        \"scoreAfter\": 8.2\n      }\n    ]\n  }\n}\n"
-  }
-];
+    /* Custom scrollbar for webkit */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans h-screen overflow-hidden flex">
 
-// === COMPONENT: HIỂN THỊ LƯỚI SCHEMA ĐỆ QUY ===
-const SchemaNode = ({ name, schema, isRequired, level = 0, isLast = true }) => {
-  if (!schema) return null;
+<!-- Mobile Menu Button -->
+<button id="mobile-menu-btn" class="md:hidden fixed bottom-4 right-4 z-50 bg-indigo-600 text-white p-3 rounded-full shadow-lg">
+  <i data-lucide="list"></i>
+</button>
 
-  // Xử lý các schema đôi khi không có 'type' nhưng có properties (mặc định là object)
-  const type = Array.isArray(schema.type) ? schema.type.join(' | ') : (schema.type || (schema.properties ? 'object' : 'any'));
-  const hasChildren = type === 'object' && schema.properties;
-  const isArray = type === 'array' && schema.items;
+<!-- Overlay for mobile menu -->
+<div id="mobile-overlay" class="fixed inset-0 bg-black/20 z-30 hidden md:hidden"></div>
 
-  return (
-    <div className={`font-mono text-sm`}>
-      <div className="flex items-start py-2 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-        {/* Khoảng trống để thụt lề cho nhánh con */}
-        <div style={{ paddingLeft: `${level * 24}px`, width: '100%' }} className="flex flex-col md:flex-row md:items-center gap-2">
-          
-          <div className="flex items-center w-full md:w-1/3 shrink-0">
-             {level > 0 && (
-               <div className="w-4 h-4 border-b border-l border-gray-300 mr-2 -mt-4 opacity-50 rounded-bl-sm inline-block"></div>
-             )}
-            <span className="font-semibold text-gray-800">{name}</span>
-            {isRequired && <span className="ml-2 text-[10px] uppercase font-bold tracking-wider text-red-500 bg-red-50 px-1.5 py-0.5 rounded">Required</span>}
+<!-- SIDEBAR -->
+<div id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
+  <div class="p-6 border-b border-gray-100 flex items-center gap-3">
+    <div class="bg-indigo-600 p-2 rounded-lg text-white">
+      <i data-lucide="webhook" class="w-5 h-5"></i>
+    </div>
+    <h1 class="font-bold text-lg text-gray-800 tracking-tight">Webhook Docs</h1>
+  </div>
+
+  <div class="flex-1 overflow-y-auto p-4">
+    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
+      Danh sách Sự kiện (Events)
+    </div>
+    <ul id="webhook-list" class="space-y-1">
+      <!-- Danh sách được render bằng JS -->
+    </ul>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="flex-1 flex flex-col h-full overflow-hidden bg-white">
+  <div id="main-content" class="flex-1 flex flex-col h-full hidden">
+    <!-- Header Nội dung -->
+    <div class="p-6 md:p-10 border-b border-gray-100 bg-white shrink-0">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center gap-2 mb-3">
+          <div class="flex items-center gap-2 text-sm text-indigo-600 font-medium bg-indigo-50 w-fit px-3 py-1 rounded-full border border-indigo-100">
+            <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+            <span id="webhook-event-name"></span>
           </div>
-
-          <div className="w-full md:w-2/3 flex flex-col gap-1 text-gray-600">
-             <div className="flex flex-wrap items-center gap-2">
-                <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs">{type}</span>
-                {schema.format && <span className="text-purple-600 bg-purple-50 px-2 py-0.5 rounded text-xs border border-purple-100">format: {schema.format}</span>}
-                {schema.enum && (
-                  <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded text-xs border border-amber-100">
-                    enum: {schema.enum.map(e => `"${e}"`).join(', ')}
-                  </span>
-                )}
-             </div>
-             {schema.description && (
-                <div className="text-gray-500 text-xs mt-1 bg-white p-2 border border-gray-100 rounded flex gap-2 items-start">
-                   <Info size={14} className="mt-0.5 text-gray-400 shrink-0"/>
-                   <span>{schema.description}</span>
-                </div>
-             )}
+          <div id="webhook-section-title-container" class="hidden text-sm text-gray-600 font-medium px-3 py-1 bg-gray-100 rounded-full border border-gray-200">
+            <span id="webhook-section-title"></span>
           </div>
-
+        </div>
+        <h2 id="webhook-display-name" class="text-3xl font-bold text-gray-900 mb-4"></h2>
+        <p id="webhook-description" class="text-gray-600 text-base leading-relaxed max-w-3xl"></p>
+        <div class="mt-4 flex gap-4 text-xs font-mono text-gray-400">
+          <span>Code: <span id="webhook-code" class="text-gray-600"></span></span>
+          <span>ID: <span id="webhook-id" class="text-gray-600"></span></span>
         </div>
       </div>
-
-      {/* Đệ quy cho Object */}
-      {hasChildren && (
-        <div className="w-full">
-          {Object.entries(schema.properties).map(([key, childSchema], index, arr) => {
-            const childIsRequired = schema.required && schema.required.includes(key);
-            return (
-              <SchemaNode 
-                key={key} 
-                name={key} 
-                schema={childSchema} 
-                isRequired={childIsRequired} 
-                level={level + 1}
-                isLast={index === arr.length - 1}
-              />
-            );
-          })}
-        </div>
-      )}
-
-      {/* Đệ quy cho Array */}
-      {isArray && (
-        <div className="w-full">
-            <div style={{ paddingLeft: `${(level + 1) * 24}px` }} className="py-2 text-gray-400 text-xs italic flex items-center">
-              <div className="w-4 h-4 border-b border-l border-gray-300 mr-2 -mt-2 opacity-50 rounded-bl-sm"></div>
-              Array items structure:
-            </div>
-            <SchemaNode 
-                name="[Item]" 
-                schema={schema.items} 
-                isRequired={true} // Item bên trong array ngầm hiểu phải tuân theo schema
-                level={level + 1}
-                isLast={true}
-              />
-        </div>
-      )}
     </div>
-  );
-};
 
+    <!-- Nội dung chi tiết (Tabs) -->
+    <div class="flex-1 overflow-y-auto bg-gray-50 p-6 md:p-10">
+      <div class="max-w-4xl mx-auto">
+        <!-- Tabs Header -->
+        <div class="flex gap-2 border-b border-gray-200 mb-6 overflow-x-auto" id="tabs-header">
+          <button onclick="setActiveTab('schema')" id="tab-btn-schema" class="px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap">
+            <i data-lucide="list" class="w-4 h-4"></i> Cấu trúc dữ liệu (Schema)
+          </button>
+          <button onclick="setActiveTab('example')" id="tab-btn-example" class="px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap">
+            <i data-lucide="code" class="w-4 h-4"></i> Payload Ví dụ
+          </button>
+          <button onclick="setActiveTab('curl')" id="tab-btn-curl" class="px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap">
+            <i data-lucide="terminal" class="w-4 h-4"></i> cURL Sample
+          </button>
+        </div>
 
-// === COMPONENT: CODE BLOCK CÓ COPY ===
-const CodeBlock = ({ code }) => {
-  const [copied, setCopied] = useState(false);
-  let formattedCode = code;
+        <!-- Tab Content Container -->
+        <div id="tab-content-container">
+          <!-- Nội dung tab sẽ được render ở đây -->
+        </div>
+      </div>
+    </div>
+  </div>
 
-  // Thử format lại JSON cho đẹp nếu có thể
-  try {
-    const parsed = JSON.parse(code);
-    formattedCode = JSON.stringify(parsed, null, 2);
-  } catch (e) {
-    // Nếu lỗi thì giữ nguyên chuỗi gốc
+  <!-- Trạng thái trống (khi chưa chọn Webhook) -->
+  <div id="empty-state" class="flex-1 flex items-center justify-center text-gray-400">
+    Vui lòng chọn một Webhook bên danh sách.
+  </div>
+</div>
+
+<!-- MAIN JAVASCRIPT -->
+<script>
+  // === DỮ LIỆU ĐƯỢC CUNG CẤP TỪ BẠN ===
+  const webhookData = [
+    {
+      "id": 11,
+      "section_title": "II.3.1. Thông tin Khóa học",
+      "code": "COURSE_PUBLISHED",
+      "event_name": "course.published",
+      "display_name": "Khóa học được phát hành",
+      "description": "Sự kiện được kích hoạt khi khóa học được publish và phát sinh payload metadata khóa học",
+      "category": "COURSE",
+      "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\"type\": \"string\", \"enum\": [\"COURSE_PUBLISHED\"]},\n    \"entityId\": {\"type\": \"string\"},\n    \"companyId\": {\"type\": \"integer\"},\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"code\": {\"type\": \"string\"},\n        \"name\": {\"type\": \"string\"},\n        \"duration\": {\"type\": \"number\", \"description\": \"Duration in minutes\"},\n        \"program\": {\"type\": \"string\"},\n        \"programName\": {\"type\": \"string\"},\n        \"trainingForm\": {\"type\": \"string\"},\n        \"trainingMethod\": {\"type\": \"string\"},\n        \"trainingDuration\": {\"type\": \"string\"},\n        \"trainingProvider\": {\"type\": \"string\"},\n        \"languageProvider\": {\"type\": \"string\"},\n        \"trainingPlan\": {\"type\": \"string\"},\n        \"trainingPlanName\": {\"type\": \"string\"},\n        \"trainingCurriculum\": {\"type\": \"string\"},\n        \"rationale\": {\"type\": \"string\"},\n        \"teacher\": {\"type\": \"string\"},\n        \"object\": {\"type\": \"string\"},\n        \"location\": {\"type\": \"string\"},\n        \"startTime\": {\"type\": \"string\", \"format\": \"date-time\"},\n        \"endTime\": {\"type\": \"string\", \"format\": \"date-time\"},\n        \"totalDuration\": {\"type\": \"number\", \"description\": \"Total duration in minutes\"},\n        \"learnerCountMin\": {\"type\": \"number\"},\n        \"learnerCountMax\": {\"type\": \"number\"}\n      },\n      \"required\": [\n        \"code\",\n        \"name\",\n        \"duration\",\n        \"startTime\",\n        \"endTime\",\n        \"totalDuration\",\n        \"learnerCountMin\",\n        \"learnerCountMax\"\n      ]\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n}\n",
+      "payload_example": "{\n  \"eventType\": \"COURSE_PUBLISHED\",\n  \"entityId\": \"101\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"code\": \"COURSE-001\",\n    \"name\": \"Kỹ năng giao tiếp nội bộ\",\n    \"duration\": 120,\n    \"program\": \"TP-2026\",\n    \"programName\": \"Khung đào tạo quản lý 2026\",\n    \"trainingForm\": \"offline\",\n    \"trainingMethod\": \"classroom\",\n    \"trainingDuration\": 2,\n    \"trainingProvider\": \"Edtexco Academy\",\n    \"languageProvider\": \"vi\",\n    \"trainingPlan\": \"Plan code\",\n    \"trainingPlanName\": \"Plan name\",\n    \"trainingCurriculum\": \"curriculum-2026\",\n    \"rationale\": \"Nâng cao kỹ năng phối hợp liên phòng ban\",\n    \"teacher\": \"Nguyễn Văn A\",\n    \"object\": \"Nhân sự quản lý cấp trung\",\n    \"location\": \"HCM Campus\",\n    \"startTime\": \"2026-03-17T08:00:00Z\",\n    \"endTime\": \"2026-03-17T10:00:00Z\",\n    \"totalDuration\": 120,\n    \"learnerCountMin\": 10,\n    \"learnerCountMax\": 30\n  },\n  \"previousData\": null,\n  \"metadata\": null,\n  \"dataType\": \"CourseWebhookData\"\n}\n"
+    },
+    {
+      "id": 12,
+      "section_title": "II.3.3. Danh sách chi phí khóa học",
+      "code": "COURSE_COST_UPDATED",
+      "event_name": "course.cost.updated",
+      "display_name": "Chi phí khóa học được cập nhật",
+      "description": "Sự kiện được kích hoạt khi danh sách chi phí của khóa học được đồng bộ sang webhook",
+      "category": "COURSE",
+      "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\"type\": \"string\", \"enum\": [\"COURSE_COST_UPDATED\"]},\n    \"entityId\": {\"type\": \"string\"},\n    \"companyId\": {\"type\": \"integer\"},\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"courseId\": {\"type\": \"integer\"},\n        \"courseCode\": {\"type\": \"string\"},\n        \"courseName\": {\"type\": \"string\"},\n        \"costs\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"costCode\": {\"type\": \"string\"},\n              \"costName\": {\"type\": \"string\"},\n              \"value\": {\"type\": \"number\"},\n              \"unit\": {\"type\": \"string\"},\n              \"note\": {\"type\": \"string\"}\n            },\n            \"required\": [\"costCode\", \"costName\", \"value\", \"unit\", \"note\"]\n          }\n        }\n      },\n      \"required\": [\"courseId\", \"courseCode\", \"courseName\", \"costs\"]\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n}\n",
+      "payload_example": "{\n  \"eventType\": \"COURSE_COST_UPDATED\",\n  \"entityId\": \"101\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"courseId\": 101,\n    \"courseCode\": \"COURSE-001\",\n    \"courseName\": \"Kỹ năng giao tiếp nội bộ\",\n    \"costs\": [\n      {\n        \"costCode\": \"1\",\n        \"costName\": \"Giảng viên\",\n        \"value\": 5000000,\n        \"unit\": \"vnd\",\n        \"note\": \"Chi phí thuê giảng viên\"\n      },\n      {\n        \"costCode\": \"2\",\n        \"costName\": \"Phòng học\",\n        \"value\": 2000000,\n        \"unit\": \"vnd\",\n        \"note\": \"Chi phí thuê phòng học\"\n      }\n    ]\n  },\n  \"previousData\": null,\n  \"metadata\": null,\n  \"dataType\": \"CourseCostListWebhookData\"\n}\n"
+    },
+    {
+      "id": 13,
+      "section_title": "II.3.2. Danh sách học viên tham gia khóa học",
+      "code": "COURSE_STUDENT_LIST_UPDATED",
+      "event_name": "course.student.list.updated",
+      "display_name": "Danh sách học viên cập nhật",
+      "description": "Sự kiện được kích hoạt khi danh sách học viên của khóa học được đồng bộ sang webhook",
+      "category": "COURSE",
+      "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\"type\": \"string\", \"enum\": [\"COURSE_STUDENT_LIST_UPDATED\"]},\n    \"entityId\": {\"type\": \"string\"},\n    \"companyId\": {\"type\": \"integer\"},\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"courseId\": {\"type\": \"integer\"},\n        \"courseCode\": {\"type\": \"string\"},\n        \"courseName\": {\"type\": \"string\"},\n        \"students\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"userCode\": {\"type\": \"string\"},\n              \"userName\": {\"type\": \"string\"},\n              \"mandatoryCompletionDate\": {\"type\": \"string\", \"format\": \"date-time\"},\n              \"reason\": {\"type\": \"string\"},\n              \"note\": {\"type\": \"string\"}\n            },\n            \"required\": [\"userCode\", \"userName\"]\n          }\n        }\n      },\n      \"required\": [\"courseId\", \"courseCode\", \"courseName\", \"students\"]\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n}\n",
+      "payload_example": "{\n  \"eventType\": \"COURSE_STUDENT_LIST_UPDATED\",\n  \"entityId\": \"101\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"courseId\": 101,\n    \"courseCode\": \"COURSE-001\",\n    \"courseName\": \"Kỹ năng giao tiếp nội bộ\",\n    \"students\": [\n      {\n        \"userCode\": \"EMP001\",\n        \"userName\": \"Nguyễn Văn A\",\n        \"mandatoryCompletionDate\": \"2026-03-31T17:00:00Z\",\n        \"reason\": \"Bắt buộc theo kế hoạch đào tạo\",\n        \"note\": \"Ưu tiên hoàn thành trước quý 2\"\n      },\n      {\n        \"userCode\": \"EMP002\",\n        \"userName\": \"Trần Thị B\",\n        \"mandatoryCompletionDate\": null,\n        \"reason\": \"Đăng ký tự nguyện\",\n        \"note\": null\n      }\n    ]\n  },\n  \"previousData\": null,\n  \"metadata\": null,\n  \"dataType\": \"CourseStudentListWebhookData\"\n}\n"
+    },
+    {
+      "id": 14,
+      "section_title": "II.3.4. Kết quả điểm danh của học viên",
+      "code": "STUDENT_ATTENDANCE",
+      "event_name": "course.student.attendance",
+      "display_name": "Học viên điểm danh",
+      "description": "Sự kiện được kích hoạt khi hệ thống ghi nhận lượt attendance đầu tiên của học viên trong khóa học",
+      "category": "COURSE",
+      "payload_schema": "{\n              \"type\": \"object\",\n              \"properties\": {\n                \"eventType\": {\"type\": \"string\", \"enum\": [\"STUDENT_ATTENDANCE\"]},\n                \"entityId\": {\"type\": \"string\"},\n                \"companyId\": {\"type\": \"integer\"},\n                \"currentData\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"courseCode\": {\"type\": \"string\"},\n                    \"courseName\": {\"type\": \"string\"},\n                    \"userCode\": {\"type\": \"string\"},\n                    \"userName\": {\"type\": \"string\"},\n                    \"courseId\": {\"type\": \"integer\"},\n                    \"date\": {\"type\": \"string\", \"format\": \"date-time\"},\n                    \"status\": {\"type\": \"string\"}\n                  },\n                  \"required\": [\"courseCode\", \"courseName\", \"userCode\", \"userName\", \"courseId\", \"date\", \"status\"]\n                }\n              },\n              \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n            }",
+      "payload_example": "{\n              \"eventType\": \"STUDENT_ATTENDANCE\",\n              \"entityId\": \"501\",\n              \"companyId\": 1,\n              \"currentData\": {\n                \"courseCode\": \"CRS001\",\n                \"courseName\": \"Ky nang ban hang co ban\",\n                \"userCode\": \"E001\",\n                \"userName\": \"Tran Thi B\",\n                \"courseId\": 1001,\n                \"date\": \"2026-03-18T08:30:00.000Z\",\n                \"status\": \"PRESENT\"\n              },\n              \"previousData\": null,\n              \"metadata\": null,\n              \"dataType\": \"CourseStudentAttendanceWebhookData\"\n            }"
+    },
+    {
+      "id": 15,
+      "section_title": "II.3.5. Kết quả học tập của học viên",
+      "code": "STUDENT_COMPLETED",
+      "event_name": "course.student.completed",
+      "display_name": "Học viên hoàn thành khóa học",
+      "description": "Sự kiện được kích hoạt khi hệ thống ghi nhận học viên hoàn thành khóa học",
+      "category": "COURSE",
+      "payload_schema": "{\n              \"type\": \"object\",\n              \"properties\": {\n                \"eventType\": {\"type\": \"string\", \"enum\": [\"STUDENT_COMPLETED\"]},\n                \"entityId\": {\"type\": \"string\"},\n                \"companyId\": {\"type\": \"integer\"},\n                \"currentData\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"courseId\": {\"type\": \"integer\"},\n                    \"courseCode\": {\"type\": \"string\"},\n                    \"courseName\": {\"type\": \"string\"},\n                    \"date\": {\"type\": \"string\", \"format\": \"date-time\"},\n                    \"status\": {\"type\": \"string\"},\n                    \"userCode\": {\"type\": \"string\"},\n                    \"userName\": {\"type\": \"string\"},\n                    \"withGrade\": {\"type\": \"boolean\"},\n                    \"score\": {\"type\": \"number\"},\n                    \"rankingLevel\": {\"type\": \"string\"}\n                  },\n                  \"required\": [\"courseId\", \"courseCode\", \"courseName\", \"date\", \"status\", \"userCode\", \"userName\", \"withGrade\", \"score\", \"rankingLevel\"]\n                }\n              },\n              \"required\": [\"eventType\", \"entityId\", \"currentData\"]\n            }",
+      "payload_example": "{\n              \"eventType\": \"STUDENT_COMPLETED\",\n              \"entityId\": \"501\",\n              \"companyId\": 1,\n              \"currentData\": {\n                \"courseId\": 1001,\n                \"courseCode\": \"CRS001\",\n                \"courseName\": \"Ky nang ban hang co ban\",\n                \"date\": \"2026-03-19T09:00:00.000Z\",\n                \"status\": \"completed\",\n                \"userCode\": \"E001\",\n                \"userName\": \"Tran Thi B\",\n                \"withGrade\": true,\n                \"score\": 8.5,\n                \"rankingLevel\": \"A\"\n              },\n              \"previousData\": null,\n              \"metadata\": null,\n              \"dataType\": \"CourseStudentCompletedWebhookData\"\n            }"
+    },
+    {
+      "id": 16,
+      "section_title": "Kết quả đánh giá khóa học của học viên theo từng tiêu chí của khóa học",
+      "code": "STUDENT_PLAN",
+      "event_name": "course.student.plan",
+      "display_name": "Đánh giá khóa học của học viên",
+      "description": "Sự kiện được kích hoạt khi học viên hoàn thành kế hoạch hành động, đánh giá các tiêu chí và quản lý đánh giá",
+      "category": "COURSE",
+      "payload_schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"eventType\": {\n      \"type\": \"string\",\n      \"enum\": [\"STUDENT_PLAN\"]\n    },\n    \"entityId\": {\n      \"type\": \"string\"\n    },\n    \"companyId\": {\n      \"type\": \"integer\"\n    },\n    \"currentData\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"courseId\": {\n          \"type\": \"integer\"\n        },\n        \"courseCode\": {\n          \"type\": \"string\"\n        },\n        \"courseName\": {\n          \"type\": \"string\"\n        },\n        \"date\": {\n          \"type\": \"string\",\n          \"format\": \"date-time\"\n        },\n        \"status\": {\n          \"type\": \"string\",\n          \"enum\": [\"completed\"]\n        },\n        \"userCode\": {\n          \"type\": \"string\"\n        },\n        \"userName\": {\n          \"type\": \"string\"\n        },\n        \"assessmentType\": {\n          \"type\": \"string\",\n          \"enum\": [\"manager\", \"employee\"]\n        },\n        \"criteria\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"code\": {\n                \"type\": \"string\"\n              },\n              \"name\": {\n                \"type\": \"string\"\n              },\n              \"scoreBefore\": {\n                \"type\": \"number\"\n              },\n              \"scoreAfter\": {\n                \"type\": \"number\"\n              }\n            },\n            \"required\": [\"code\"]\n          }\n        }\n      },\n      \"required\": [\n        \"courseId\",\n        \"courseCode\",\n        \"courseName\",\n        \"date\",\n        \"status\",\n        \"userCode\",\n        \"userName\",\n        \"assessmentType\"\n      ]\n    },\n    \"previousData\": {\n      \"type\": [\"object\", \"null\"]\n    },\n    \"metadata\": {\n      \"type\": [\"object\", \"null\"]\n    },\n    \"dataType\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\"eventType\", \"entityId\", \"companyId\", \"currentData\"]\n}\n",
+      "payload_example": "{\n  \"eventType\": \"STUDENT_PLAN\",\n  \"entityId\": \"502\",\n  \"companyId\": 1,\n  \"currentData\": {\n    \"courseId\": 1001,\n    \"courseCode\": \"CRS001\",\n    \"courseName\": \"Ky nang ban hang co ban\",\n    \"date\": \"2026-03-19T10:15:00.000Z\",\n    \"status\": \"completed\",\n    \"userCode\": \"E001\",\n    \"userName\": \"Tran Thi B\",\n    \"assessmentType\": \"manager\",\n    \"criteria\": [\n      {\n        \"code\": \"target_fulfillment\",\n        \"name\": \"Muc do dap ung muc tieu dat ra truoc khi dao tao\",\n        \"scoreBefore\": 6,\n        \"scoreAfter\": 8.5\n      },\n      {\n        \"code\": \"knowledge_application\",\n        \"name\": \"Muc do ap dung kien thuc dao tao de cai tien cong viec\",\n        \"scoreBefore\": 5.5,\n        \"scoreAfter\": 7.8\n      },\n      {\n        \"code\": \"skill_improvement\",\n        \"name\": \"Muc do thay doi ky nang, nang luc cong viec\",\n        \"scoreBefore\": 6.5,\n        \"scoreAfter\": 8.2\n      }\n    ]\n  }\n}\n"
+    }
+  ];
+
+  // --- STATE ---
+  let activeId = webhookData[0].id;
+  let activeTab = 'schema'; // 'schema' | 'example' | 'curl'
+  let isMobileMenuOpen = false;
+
+  // --- UTILS & RENDERING ---
+
+  function getActiveWebhook() {
+    return webhookData.find(w => w.id === activeId);
   }
 
-  const handleCopy = () => {
-    document.execCommand('copy');
-    // Mẹo cho iframe sandbox: tạo textarea tạm
-    const el = document.createElement('textarea');
-    el.value = formattedCode;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="relative group">
-      <div className="absolute right-4 top-4">
-        <button 
-          onClick={handleCopy}
-          className="p-2 bg-gray-800 text-gray-300 hover:text-white rounded-md transition-all flex items-center gap-2 text-xs"
-        >
-          {copied ? <Check size={14} className="text-green-400"/> : <Copy size={14} />}
-          {copied ? 'Copied!' : 'Copy'}
-        </button>
-      </div>
-      <pre className="bg-[#1e1e2e] text-[#cdd6f4] p-6 rounded-xl overflow-x-auto text-sm font-mono shadow-inner border border-gray-800">
-        <code>{formattedCode}</code>
-      </pre>
-    </div>
-  );
-};
-
-
-// === MAIN APP ===
-export default function App() {
-  const [activeId, setActiveId] = useState(webhookData[0].id);
-  const [activeTab, setActiveTab] = useState('schema'); // 'schema' | 'example'
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const activeWebhook = webhookData.find(w => w.id === activeId);
-
-  // Xử lý parse schema
-  let parsedSchema = null;
-  if (activeWebhook) {
+  function formatJSON(jsonStr) {
     try {
-      parsedSchema = JSON.parse(activeWebhook.payload_schema);
+      const parsed = JSON.parse(jsonStr);
+      return JSON.stringify(parsed, null, 2);
     } catch (e) {
-      console.error("Lỗi parse schema cho webhook:", activeWebhook.code, e);
+      return jsonStr;
     }
   }
 
-  // Generate cURL string
-  const generateCurl = () => {
+  // Tạo chuỗi cURL
+  function generateCurlString() {
+    const activeWebhook = getActiveWebhook();
     if (!activeWebhook) return '';
     let payload = '{}';
     try {
@@ -232,190 +230,277 @@ export default function App() {
   -H "Content-Type: application/json" \\
   -H "X-Webhook-Event: ${activeWebhook.event_name}" \\
   -d '${payload}'`;
+  }
+
+  // Hàm sao chép mã
+  window.copyToClipboard = function(btnElement, textToCopy) {
+    // Cách dùng element tạm thời để hỗ trợ tốt hơn
+    const el = document.createElement('textarea');
+    el.value = textToCopy;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+
+    // Đổi UI button
+    const originalHTML = btnElement.innerHTML;
+    btnElement.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-green-400"></i> Copied!`;
+    lucide.createIcons(); // Re-render icon
+
+    setTimeout(() => {
+      btnElement.innerHTML = originalHTML;
+      lucide.createIcons();
+    }, 2000);
   };
 
-  return (
-    <div className="flex h-screen bg-gray-50 text-gray-900 font-sans overflow-hidden">
-      
-      {/* Nút bật/tắt menu trên Mobile */}
-      <button 
-        className="md:hidden fixed bottom-4 right-4 z-50 bg-indigo-600 text-white p-3 rounded-full shadow-lg"
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        <List size={24} />
-      </button>
+  // Render Code Block HTML
+  function renderCodeBlock(code) {
+    const formattedCode = formatJSON(code);
+    // Escape code for textarea
+    const escapedCode = formattedCode.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    // Escape for JS function param
+    const encodedForJS = encodeURIComponent(formattedCode);
 
-      {/* SIDEBAR */}
-      <div className={`
-        fixed md:static inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out flex flex-col
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      `}>
-        <div className="p-6 border-b border-gray-100 flex items-center gap-3">
-          <div className="bg-indigo-600 p-2 rounded-lg text-white">
-            <Webhook size={20} />
-          </div>
-          <h1 className="font-bold text-lg text-gray-800 tracking-tight">Webhook Docs</h1>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
-            Danh sách Sự kiện (Events)
-          </div>
-          <ul className="space-y-1">
-            {webhookData.map(webhook => (
-              <li key={webhook.id}>
-                <button
-                  onClick={() => {
-                    setActiveId(webhook.id);
-                    setIsMobileMenuOpen(false);
-                    setActiveTab('schema'); // Reset về tab schema khi chuyển webhook
-                  }}
-                  className={`
-                    w-full text-left px-4 py-3 rounded-lg text-sm transition-all duration-200 flex flex-col gap-1
-                    ${activeId === webhook.id 
-                      ? 'bg-indigo-50 border border-indigo-100 text-indigo-700 shadow-sm' 
-                      : 'hover:bg-gray-50 text-gray-600 border border-transparent'}
-                  `}
-                >
-                  <span className="font-medium truncate">{webhook.display_name}</span>
-                  <span className={`text-xs font-mono truncate ${activeId === webhook.id ? 'text-indigo-400' : 'text-gray-400'}`}>
-                    {webhook.event_name}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Nền làm tối khi mở menu mobile */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black/20 z-30 md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden bg-white">
-        {activeWebhook ? (
-          <>
-            {/* Header Nội dung */}
-            <div className="p-6 md:p-10 border-b border-gray-100 bg-white shrink-0">
-              <div className="max-w-4xl mx-auto">
-                <div className="flex flex-col md:flex-row md:items-center gap-2 mb-3">
-                  <div className="flex items-center gap-2 text-sm text-indigo-600 font-medium bg-indigo-50 w-fit px-3 py-1 rounded-full border border-indigo-100">
-                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-                    {activeWebhook.event_name}
-                  </div>
-                  {activeWebhook.section_title && (
-                    <div className="text-sm text-gray-600 font-medium px-3 py-1 bg-gray-100 rounded-full border border-gray-200">
-                      {activeWebhook.section_title}
-                    </div>
-                  )}
+    return `
+            <div class="relative group animate-fade-in-up">
+                <div class="absolute right-4 top-4">
+                    <button 
+                        onclick="copyToClipboard(this, decodeURIComponent('${encodedForJS}'))"
+                        class="p-2 bg-gray-800 text-gray-300 hover:text-white rounded-md transition-all flex items-center gap-2 text-xs"
+                    >
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy
+                    </button>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">{activeWebhook.display_name}</h2>
-                <p className="text-gray-600 text-base leading-relaxed max-w-3xl">
-                  {activeWebhook.description}
-                </p>
-                <div className="mt-4 flex gap-4 text-xs font-mono text-gray-400">
-                  <span>Code: <span className="text-gray-600">{activeWebhook.code}</span></span>
-                  <span>ID: <span className="text-gray-600">{activeWebhook.id}</span></span>
-                </div>
-              </div>
+                <pre class="bg-[#1e1e2e] text-[#cdd6f4] p-6 rounded-xl overflow-x-auto text-sm font-mono shadow-inner border border-gray-800"><code>${escapedCode}</code></pre>
             </div>
+            `;
+  }
 
-            {/* Nội dung chi tiết (Tabs) */}
-            <div className="flex-1 overflow-y-auto bg-gray-50 p-6 md:p-10">
-              <div className="max-w-4xl mx-auto">
-                
-                {/* Tabs Header */}
-                <div className="flex gap-2 border-b border-gray-200 mb-6 overflow-x-auto">
-                  <button 
-                    onClick={() => setActiveTab('schema')}
-                    className={`px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === 'schema' 
-                        ? 'border-indigo-600 text-indigo-600' 
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <List size={16} /> Cấu trúc dữ liệu (Schema)
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('example')}
-                    className={`px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === 'example' 
-                        ? 'border-indigo-600 text-indigo-600' 
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <Code size={16} /> Payload Ví dụ
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('curl')}
-                    className={`px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === 'curl' 
-                        ? 'border-indigo-600 text-indigo-600' 
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <Terminal size={16} /> cURL Sample
-                  </button>
-                </div>
+  // Hàm đệ quy render cấu trúc Schema
+  function generateSchemaHTML(name, schema, isRequired, level = 0) {
+    if (!schema) return '';
 
-                {/* Tab Content: Schema */}
-                {activeTab === 'schema' && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="p-4 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center text-sm text-gray-500 font-medium">
-                      <span>Thuộc tính</span>
-                      <span>Kiểu dữ liệu</span>
+    const type = Array.isArray(schema.type) ? schema.type.join(' | ') : (schema.type || (schema.properties ? 'object' : 'any'));
+    const hasChildren = type === 'object' && schema.properties;
+    const isArray = type === 'array' && schema.items;
+
+    let html = `<div class="font-mono text-sm">`;
+    const paddingLeft = level * 24;
+
+    html += `
+            <div class="flex items-start py-2 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <div style="padding-left: ${paddingLeft}px; width: 100%" class="flex flex-col md:flex-row md:items-center gap-2">
+                    
+                    <div class="flex items-center w-full md:w-1/3 shrink-0">
+                        ${level > 0 ? `<div class="w-4 h-4 border-b border-l border-gray-300 mr-2 -mt-4 opacity-50 rounded-bl-sm inline-block"></div>` : ''}
+                        <span class="font-semibold text-gray-800">${name}</span>
+                        ${isRequired ? `<span class="ml-2 text-[10px] uppercase font-bold tracking-wider text-red-500 bg-red-50 px-1.5 py-0.5 rounded">Required</span>` : ''}
                     </div>
-                    <div className="p-2 md:p-4">
-                      {parsedSchema ? (
-                         <SchemaNode 
-                            name="payload (root)" 
-                            schema={parsedSchema} 
-                            isRequired={true}
-                         />
-                      ) : (
-                        <div className="text-red-500 p-4 bg-red-50 rounded">
-                          Lỗi: Không thể phân tích chuỗi payload_schema. Hãy kiểm tra định dạng JSON.
+
+                    <div class="w-full md:w-2/3 flex flex-col gap-1 text-gray-600">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs">${type}</span>
+                            ${schema.format ? `<span class="text-purple-600 bg-purple-50 px-2 py-0.5 rounded text-xs border border-purple-100">format: ${schema.format}</span>` : ''}
+                            ${schema.enum ? `<span class="text-amber-600 bg-amber-50 px-2 py-0.5 rounded text-xs border border-amber-100">enum: ${schema.enum.map(e => `"${e}"`).join(', ')}</span>` : ''}
                         </div>
-                      )}
+                        ${schema.description ? `
+                        <div class="text-gray-500 text-xs mt-1 bg-white p-2 border border-gray-100 rounded flex gap-2 items-start">
+                            <i data-lucide="info" class="w-3.5 h-3.5 mt-0.5 text-gray-400 shrink-0"></i>
+                            <span>${schema.description}</span>
+                        </div>` : ''}
                     </div>
-                  </div>
-                )}
 
-                {/* Tab Content: Example */}
-                {activeTab === 'example' && (
-                  <div className="animate-fade-in-up">
-                    <CodeBlock code={activeWebhook.payload_example} />
-                  </div>
-                )}
+                </div>
+            </div>`;
 
-                {/* Tab Content: cURL */}
-                {activeTab === 'curl' && (
-                  <div className="animate-fade-in-up">
-                    <div className="mb-4 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-100 flex items-start gap-2">
-                      <Info size={16} className="text-blue-500 mt-0.5 shrink-0" />
-                      <div>
-                        Dưới đây là ví dụ lệnh <strong>cURL</strong> mô phỏng request mà hệ thống sẽ gửi đến endpoint của bạn.
-                      </div>
+    // Đệ quy cho Object
+    if (hasChildren) {
+      html += `<div class="w-full">`;
+      Object.entries(schema.properties).forEach(([key, childSchema]) => {
+        const childIsRequired = schema.required && schema.required.includes(key);
+        html += generateSchemaHTML(key, childSchema, childIsRequired, level + 1);
+      });
+      html += `</div>`;
+    }
+
+    // Đệ quy cho Array
+    if (isArray) {
+      html += `
+                <div class="w-full">
+                    <div style="padding-left: ${(level + 1) * 24}px" class="py-2 text-gray-400 text-xs italic flex items-center">
+                        <div class="w-4 h-4 border-b border-l border-gray-300 mr-2 -mt-2 opacity-50 rounded-bl-sm"></div>
+                        Array items structure:
                     </div>
-                    <CodeBlock code={generateCurl()} />
-                  </div>
-                )}
-                
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
-            Vui lòng chọn một Webhook bên danh sách.
-          </div>
-        )}
-      </div>
+                    ${generateSchemaHTML("[Item]", schema.items, true, level + 1)}
+                </div>`;
+    }
 
-    </div>
-  );
-}
+    html += `</div>`;
+    return html;
+  }
+
+  // --- CẬP NHẬT GIAO DIỆN (DOM) ---
+
+  function renderSidebar() {
+    const listEl = document.getElementById('webhook-list');
+    listEl.innerHTML = webhookData.map(w => {
+      const isActive = activeId === w.id;
+      const btnClasses = isActive
+              ? 'bg-indigo-50 border border-indigo-100 text-indigo-700 shadow-sm'
+              : 'hover:bg-gray-50 text-gray-600 border border-transparent';
+      const eventNameClasses = isActive ? 'text-indigo-400' : 'text-gray-400';
+
+      return `
+                <li>
+                    <button
+                        onclick="handleSelectWebhook(${w.id})"
+                        class="w-full text-left px-4 py-3 rounded-lg text-sm transition-all duration-200 flex flex-col gap-1 ${btnClasses}"
+                    >
+                        <span class="font-medium truncate">${w.display_name}</span>
+                        <span class="text-xs font-mono truncate ${eventNameClasses}">${w.event_name}</span>
+                    </button>
+                </li>
+                `;
+    }).join('');
+  }
+
+  function renderMainContent() {
+    const activeWebhook = getActiveWebhook();
+    const mainContentEl = document.getElementById('main-content');
+    const emptyStateEl = document.getElementById('empty-state');
+
+    if (!activeWebhook) {
+      mainContentEl.classList.add('hidden');
+      emptyStateEl.classList.remove('hidden');
+      return;
+    }
+
+    // Show content, hide empty state
+    mainContentEl.classList.remove('hidden');
+    emptyStateEl.classList.add('hidden');
+
+    // Cập nhật Header
+    document.getElementById('webhook-event-name').innerText = activeWebhook.event_name;
+    document.getElementById('webhook-display-name').innerText = activeWebhook.display_name;
+    document.getElementById('webhook-description').innerText = activeWebhook.description;
+    document.getElementById('webhook-code').innerText = activeWebhook.code;
+    document.getElementById('webhook-id').innerText = activeWebhook.id;
+
+    const sectionContainer = document.getElementById('webhook-section-title-container');
+    const sectionTitle = document.getElementById('webhook-section-title');
+    if (activeWebhook.section_title) {
+      sectionTitle.innerText = activeWebhook.section_title;
+      sectionContainer.classList.remove('hidden');
+    } else {
+      sectionContainer.classList.add('hidden');
+    }
+
+    // Cập nhật trạng thái Tabs Header
+    const tabBtns = ['schema', 'example', 'curl'];
+    tabBtns.forEach(tab => {
+      const btn = document.getElementById(`tab-btn-${tab}`);
+      if (tab === activeTab) {
+        btn.className = "px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap border-indigo-600 text-indigo-600";
+      } else {
+        btn.className = "px-5 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300";
+      }
+    });
+
+    // Cập nhật Nội dung Tab
+    const contentContainer = document.getElementById('tab-content-container');
+
+    if (activeTab === 'schema') {
+      let parsedSchema = null;
+      try {
+        parsedSchema = JSON.parse(activeWebhook.payload_schema);
+      } catch (e) {
+        console.error("Parse schema error:", e);
+      }
+
+      if (parsedSchema) {
+        contentContainer.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate-fade-in-up">
+                        <div class="p-4 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center text-sm text-gray-500 font-medium">
+                            <span>Thuộc tính</span>
+                            <span>Kiểu dữ liệu</span>
+                        </div>
+                        <div class="p-2 md:p-4">
+                            ${generateSchemaHTML('payload (root)', parsedSchema, true)}
+                        </div>
+                    </div>
+                    `;
+      } else {
+        contentContainer.innerHTML = `
+                    <div class="text-red-500 p-4 bg-red-50 rounded animate-fade-in-up">
+                        Lỗi: Không thể phân tích chuỗi payload_schema. Hãy kiểm tra định dạng JSON.
+                    </div>`;
+      }
+    }
+    else if (activeTab === 'example') {
+      contentContainer.innerHTML = renderCodeBlock(activeWebhook.payload_example);
+    }
+    else if (activeTab === 'curl') {
+      contentContainer.innerHTML = `
+                <div class="animate-fade-in-up">
+                    <div class="mb-4 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-100 flex items-start gap-2">
+                        <i data-lucide="info" class="w-4 h-4 text-blue-500 mt-0.5 shrink-0"></i>
+                        <div>
+                            Dưới đây là ví dụ lệnh <strong>cURL</strong> mô phỏng request mà hệ thống sẽ gửi đến endpoint của bạn.
+                        </div>
+                    </div>
+                    ${renderCodeBlock(generateCurlString())}
+                </div>
+                `;
+    }
+
+    // Khởi tạo lại icons sau khi cập nhật DOM
+    setTimeout(() => {
+      lucide.createIcons();
+    }, 0);
+  }
+
+  // --- XỬ LÝ SỰ KIỆN ---
+
+  window.handleSelectWebhook = function(id) {
+    activeId = id;
+    activeTab = 'schema'; // Reset tab
+    isMobileMenuOpen = false;
+    updateMobileMenuState();
+    renderSidebar();
+    renderMainContent();
+  };
+
+  window.setActiveTab = function(tab) {
+    activeTab = tab;
+    renderMainContent(); // Re-render main content để hiển thị tab mới
+  };
+
+  function toggleMobileMenu() {
+    isMobileMenuOpen = !isMobileMenuOpen;
+    updateMobileMenuState();
+  }
+
+  function updateMobileMenuState() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+
+    if (isMobileMenuOpen) {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    }
+  }
+
+  // Init App
+  document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+  document.getElementById('mobile-overlay').addEventListener('click', toggleMobileMenu);
+
+  // Khởi động render
+  renderSidebar();
+  renderMainContent();
+
+</script>
+</body>
+</html>
