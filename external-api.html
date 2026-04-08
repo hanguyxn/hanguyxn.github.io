@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lms Interaction Service - API Docs</title>
+  <style>
+    /* Reset margin cho trang */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+<!-- Thẻ script chứa toàn bộ cấu hình OpenAPI JSON -->
+<script id="api-reference" type="application/json">
+  {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Lms Interaction Service",
+      "description": "Lms Interaction Service - Tài liệu API tích hợp cho bên thứ ba.",
+      "version": "1.0",
+      "contact": {}
+    },
+    "tags": [
+      {
+        "name": "External API — API cho bên thứ ba",
+        "description": ""
+      }
+    ],
+    "servers": [
+      {
+        "url": "https://api.xbest.io/lms-interaction-service"
+      }
+    ],
+    "paths": {
+      "/v1/external/users": {
+        "get": {
+          "operationId": "ExternalApiController_filterUsers",
+          "summary": "Lấy danh sách nhân sự",
+          "description": "Filter theo mã nhân viên, mã phòng ban, mã chức danh, tên. Trả về danh sách nhân sự kèm vị trí công tác.",
+          "parameters": [
+            { "name": "size", "required": false, "in": "query", "schema": { "default": 250, "type": "number" } },
+            { "name": "page", "required": false, "in": "query", "schema": { "default": 1, "type": "number" } },
+            { "name": "codes", "required": false, "in": "query", "description": "Danh sách mã nhân viên", "schema": { "type": "array", "items": { "type": "string" } } },
+            { "name": "departmentCodes", "required": false, "in": "query", "description": "Danh sách mã phòng ban", "schema": { "type": "array", "items": { "type": "string" } } },
+            { "name": "positionCodes", "required": false, "in": "query", "description": "Danh sách mã chức danh", "schema": { "type": "array", "items": { "type": "string" } } },
+            { "name": "name", "required": false, "in": "query", "description": "Tìm theo tên", "schema": { "example": "Nguyễn", "type": "string" } }
+          ],
+          "responses": {
+            "200": { "description": "Danh sách nhân sự", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/UserFilterV2Response" } } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        },
+        "post": {
+          "operationId": "ExternalApiController_createUsers",
+          "summary": "Tạo nhân sự",
+          "description": "Tạo batch nhân sự. Dùng departmentCode/positionCode thay vì ID. Service sẽ resolve code → ID.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUserCreateRequest" } } } },
+          "responses": {
+            "200": { "description": "Kết quả tạo nhân sự", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        },
+        "put": {
+          "operationId": "ExternalApiController_updateUsers",
+          "summary": "Cập nhật nhân sự",
+          "description": "Cập nhật batch nhân sự theo mã nhân viên (code). Service lookup userId từ code.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUserUpdateRequest" } } } },
+          "responses": {
+            "200": { "description": "Kết quả cập nhật", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
+      },
+      "/v1/external/departments": {
+        "get": {
+          "operationId": "ExternalApiController_filterDepartments",
+          "summary": "Lấy danh sách phòng ban",
+          "description": "Filter theo mã phòng ban hoặc ID.",
+          "parameters": [
+            { "name": "codes", "required": false, "in": "query", "description": "Danh sách mã phòng ban", "schema": { "type": "array", "items": { "type": "string" } } },
+            { "name": "ids", "required": false, "in": "query", "description": "Danh sách ID phòng ban", "schema": { "type": "array", "items": { "type": "number" } } }
+          ],
+          "responses": { "200": { "description": "Danh sách phòng ban" } },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        },
+        "post": {
+          "operationId": "ExternalApiController_createDepartments",
+          "summary": "Tạo phòng ban",
+          "description": "Tạo batch phòng ban. parentCode phải tồn tại trên hệ thống hoặc trong cùng request.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalDepartmentCreateRequest" } } } },
+          "responses": { "200": { "description": "Kết quả tạo", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } } },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        },
+        "put": {
+          "operationId": "ExternalApiController_updateDepartments",
+          "summary": "Cập nhật phòng ban",
+          "description": "Cập nhật batch phòng ban theo mã (code). Service lookup departmentId từ code.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalDepartmentUpdateRequest" } } } },
+          "responses": { "200": { "description": "Kết quả cập nhật", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } } },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
+      },
+      "/v1/external/positions": {
+        "get": {
+          "operationId": "ExternalApiController_filterPositions",
+          "summary": "Lấy danh sách chức danh",
+          "description": "Filter theo mã chức danh, mã phòng ban, query.",
+          "parameters": [
+            { "name": "size", "required": false, "in": "query", "schema": { "default": 250, "type": "number" } },
+            { "name": "page", "required": false, "in": "query", "schema": { "default": 1, "type": "number" } },
+            { "name": "codes", "required": false, "in": "query", "description": "Danh sách mã chức danh", "schema": { "type": "array", "items": { "type": "string" } } },
+            { "name": "departmentCodes", "required": false, "in": "query", "description": "Danh sách mã phòng ban", "schema": { "type": "array", "items": { "type": "string" } } },
+            { "name": "query", "required": false, "in": "query", "description": "Tìm kiếm", "schema": { "example": "Trưởng", "type": "string" } }
+          ],
+          "responses": { "200": { "description": "Danh sách chức danh" } },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        },
+        "post": {
+          "operationId": "ExternalApiController_createPositions",
+          "summary": "Tạo chức danh",
+          "description": "Tạo batch chức danh. departmentCodes phải tồn tại.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalPositionCreateRequest" } } } },
+          "responses": { "200": { "description": "Kết quả tạo", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } } },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        },
+        "put": {
+          "operationId": "ExternalApiController_updatePositions",
+          "summary": "Cập nhật chức danh",
+          "description": "Cập nhật batch chức danh theo mã (code). Service lookup positionId từ code.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalPositionUpdateRequest" } } } },
+          "responses": { "200": { "description": "Kết quả cập nhật", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } } },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "headerAuth": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "token",
+          "description": "Nhập token được cấp của bạn vào đây (Sẽ được truyền qua header 'token')"
+        }
+      },
+      "schemas": {
+        "UserFilterV2Response": { "type": "object", "properties": { "id": { "type": "string" }, "code": { "type": "string" }, "fullName": { "type": "string" }, "email": { "type": "string" }, "phone": { "type": "string" }, "avatar": { "type": "string" }, "birthDay": { "format": "date-time", "type": "string" }, "gender": { "type": "string", "enum": ["male", "female"] }, "status": { "type": "string", "enum": ["active", "inactive"] }, "positionUsers": { "type": "array", "items": { "type": "string" } }, "roles": { "type": "array", "items": { "type": "string" } }, "createdTime": { "format": "date-time", "type": "string" }, "address": { "type": "string" } }, "required": ["id", "code", "fullName", "email", "phone", "avatar", "birthDay", "gender", "status", "positionUsers", "roles", "createdTime", "address"] },
+        "ExternalPositionUserItem": { "type": "object", "properties": { "departmentCode": { "type": "string", "description": "Mã phòng ban", "example": "PB-IT" }, "positionCode": { "type": "string", "description": "Mã chức danh", "example": "CD-TP" }, "isMain": { "type": "boolean", "description": "Là vị trí chính", "example": true, "default": false }, "isRepresent": { "type": "boolean", "description": "Là đại diện", "example": false, "default": false } }, "required": ["departmentCode", "positionCode"] },
+        "ExternalUserItem": { "type": "object", "properties": { "code": { "type": "string", "description": "Mã nhân viên", "example": "NV001" }, "fullName": { "type": "string", "description": "Họ tên đầy đủ", "example": "Nguyễn Văn A" }, "email": { "type": "string", "description": "Email", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại", "example": "0901234567" }, "address": { "type": "string", "description": "Địa chỉ", "example": "TP.HCM" }, "gender": { "type": "number", "description": "Giới tính: 0=Nữ, 1=Nam, 2=Khác", "example": 1 }, "birthday": { "type": "string", "description": "Ngày sinh (YYYY-MM-DD)", "example": "1990-05-15" }, "roleId": { "type": "number", "description": "ID role trong hệ thống", "example": 3 }, "positionUsers": { "description": "Danh sách vị trí công tác", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionUserItem" } } }, "required": ["code", "fullName", "email", "roleId"] },
+        "ExternalUserCreateRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần tạo", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUserItem" } } }, "required": ["users"] },
+        "ExternalSyncErrorDetail": { "type": "object", "properties": { "index": { "type": "number", "description": "Index trong mảng request", "example": 0 }, "code": { "type": "string", "description": "Mã định danh", "example": "NV001" }, "message": { "type": "string", "description": "Thông báo lỗi", "example": "Mã phòng ban PB-XYZ không tồn tại" } }, "required": ["index", "code", "message"] },
+        "ExternalSyncResultResponse": { "type": "object", "properties": { "total": { "type": "number", "description": "Tổng số bản ghi nhận được", "example": 5 }, "created": { "type": "number", "description": "Số bản ghi tạo thành công", "example": 3 }, "updated": { "type": "number", "description": "Số bản ghi cập nhật thành công", "example": 1 }, "errors": { "type": "number", "description": "Số bản ghi lỗi", "example": 1 }, "errorDetails": { "description": "Chi tiết lỗi từng bản ghi", "type": "array", "items": { "$ref": "#/components/schemas/ExternalSyncErrorDetail" } } }, "required": ["total", "created", "updated", "errors", "errorDetails"] },
+        "ExternalUserUpdateRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUserItem" } } }, "required": ["users"] },
+        "ExternalDepartmentItem": { "type": "object", "properties": { "code": { "type": "string", "description": "Mã phòng ban", "example": "PB-IT" }, "name": { "type": "string", "description": "Tên phòng ban", "example": "Phòng Công nghệ thông tin" }, "address": { "type": "string", "description": "Địa chỉ", "example": "Tầng 5, Tòa A" }, "phone": { "type": "string", "description": "Số điện thoại", "example": "02812345678" }, "description": { "type": "string", "description": "Mô tả" }, "parentCode": { "type": "string", "description": "Mã phòng ban cha", "example": "PB-ROOT" } }, "required": ["code", "name"] },
+        "ExternalDepartmentCreateRequest": { "type": "object", "properties": { "departments": { "description": "Danh sách phòng ban cần tạo", "type": "array", "items": { "$ref": "#/components/schemas/ExternalDepartmentItem" } } }, "required": ["departments"] },
+        "ExternalDepartmentUpdateRequest": { "type": "object", "properties": { "departments": { "description": "Danh sách phòng ban cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalDepartmentItem" } } }, "required": ["departments"] },
+        "ExternalPositionItem": { "type": "object", "properties": { "code": { "type": "string", "description": "Mã chức danh", "example": "CD-TP" }, "name": { "type": "string", "description": "Tên chức danh", "example": "Trưởng phòng" }, "description": { "type": "string", "description": "Mô tả" }, "parentCode": { "type": "string", "description": "Mã chức danh cha", "example": "CD-ROOT" }, "departmentCodes": { "description": "Danh sách mã phòng ban áp dụng", "example": ["PB-IT", "PB-HR"], "type": "array", "items": { "type": "string" } } }, "required": ["code", "name", "departmentCodes"] },
+        "ExternalPositionCreateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần tạo", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] },
+        "ExternalPositionUpdateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] }
+      }
+    }
+  }
+</script>
+
+<!-- Nhúng Script cho thư viện Scalar -->
+<script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+</body>
+</html>
