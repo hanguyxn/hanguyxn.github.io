@@ -1,816 +1,946 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LMS Survey Service API Documentation</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <style>
-      :root {
-        --bg-body: #ffffff;
-        --bg-sidebar: #f8fafc;
-        --bg-surface: #ffffff;
-        --bg-code: #0f172a;
-        --text-main: #0f172a;
-        --text-muted: #64748b;
-        --text-code: #e2e8f0;
-        --border-color: #e2e8f0;
-        --border-code: #334155;
-        --accent-blue: #2563eb;
-        --accent-blue-hover: #1d4ed8;
-        --accent-blue-bg: #eff6ff;
-        --method-get: #0284c7;
-        --method-get-bg: #e0f2fe;
-        --method-post: #16a34a;
-        --method-post-bg: #dcfce3;
-        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        --font-mono: 'Fira Code', Consolas, monospace;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LMS Survey Service API Documentation</title>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+          rel="stylesheet"
+  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-body: #ffffff;
+      --bg-sidebar: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-code: #0f172a;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-code: #e2e8f0;
+      --border-color: #e2e8f0;
+      --border-code: #334155;
+      --accent-blue: #2563eb;
+      --accent-blue-hover: #1d4ed8;
+      --accent-blue-bg: #eff6ff;
+      --method-get: #0284c7;
+      --method-get-bg: #e0f2fe;
+      --method-post: #16a34a;
+      --method-post-bg: #dcfce3;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Fira Code', Consolas, monospace;
+    }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      html {
-        scroll-behavior: smooth;
-      }
-      body {
-        font-family: var(--font-sans);
-        background-color: var(--bg-body);
-        color: var(--text-main);
-        line-height: 1.6;
-        display: flex;
-        height: 100vh;
-        overflow: hidden;
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-      /* --- LAYOUT --- */
-      .sidebar {
-        width: 280px;
-        background-color: var(--bg-sidebar);
-        border-right: 1px solid var(--border-color);
-        height: 100vh;
-        overflow-y: auto;
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      .main-content {
-        flex: 1;
-        height: 100vh;
-        overflow-y: auto;
-        padding: 3rem 4rem;
-      }
-      .container {
-        max-width: 900px;
-        margin: 0 auto;
-      }
+    /* --- LAYOUT --- */
+    .sidebar {
+      width: 280px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 3rem 4rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
-      /* --- SIDEBAR --- */
-      .logo {
-        padding: 1.5rem;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-main);
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-      }
-      .logo i {
-        color: var(--accent-blue);
-      }
-      .nav-menu {
-        padding: 1.5rem 1rem;
-        list-style: none;
-      }
-      .nav-group-title {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        font-weight: 700;
-        color: var(--text-muted);
-        margin-bottom: 0.75rem;
-        padding-left: 0.75rem;
-      }
-      .nav-link {
-        display: flex;
-        align-items: center;
-        padding: 0.5rem 0.75rem;
-        color: var(--text-muted);
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        transition: all 0.2s;
-        margin-bottom: 0.25rem;
-      }
-      .nav-link:hover {
-        background-color: var(--border-color);
-        color: var(--text-main);
-      }
-      .nav-method {
-        font-size: 0.65rem;
-        font-weight: 700;
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        margin-right: 0.75rem;
-      }
-      .nav-method.get {
-        background-color: var(--method-get-bg);
-        color: var(--method-get);
-      }
-      .nav-method.post {
-        background-color: var(--method-post-bg);
-        color: var(--method-post);
-      }
+    /* --- SIDEBAR --- */
+    .logo {
+      padding: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo i {
+      color: var(--accent-blue);
+    }
+    .nav-menu {
+      padding: 1.5rem 1rem;
+      list-style: none;
+    }
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-left: 0.75rem;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      margin-bottom: 0.25rem;
+    }
+    .nav-link:hover {
+      background-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .nav-method {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      margin-right: 0.75rem;
+    }
+    .nav-method.get {
+      background-color: var(--method-get-bg);
+      color: var(--method-get);
+    }
+    .nav-method.post {
+      background-color: var(--method-post-bg);
+      color: var(--method-post);
+    }
 
-      /* --- MAIN CONTENT TYPOGRAPHY --- */
-      header {
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid var(--border-color);
-      }
-      h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        margin-bottom: 0.5rem;
-      }
-      p.subtitle {
-        color: var(--text-muted);
-        font-size: 1.1rem;
-      }
+    /* --- MAIN CONTENT TYPOGRAPHY --- */
+    header {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
 
-      /* --- BASE URL BLOCK --- */
-      .base-url-block {
-        background-color: var(--bg-sidebar);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-bottom: 3rem;
-      }
-      .base-url-title {
-        font-size: 1rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .base-url-title i {
-        color: var(--accent-blue);
-      }
-      .base-url-desc {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-      }
-      .base-url-code {
-        background-color: var(--bg-code);
-        color: var(--text-code);
-        padding: 0.85rem 1rem;
-        border-radius: 6px;
-        font-family: var(--font-mono);
-        font-size: 0.9rem;
-        border: 1px solid var(--border-code);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
+    /* --- BASE URL BLOCK --- */
+    .base-url-block {
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .base-url-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .base-url-title i {
+      color: var(--accent-blue);
+    }
+    .base-url-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .base-url-code {
+      background-color: var(--bg-code);
+      color: var(--text-code);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      border: 1px solid var(--border-code);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-      section {
-        margin-bottom: 5rem;
-        scroll-margin-top: 3rem;
-        padding-top: 1rem;
-      }
+    section {
+      margin-bottom: 5rem;
+      scroll-margin-top: 3rem;
+      padding-top: 1rem;
+    }
 
-      /* --- ENDPOINT HEADER --- */
-      .endpoint-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-      }
-      .endpoint-desc {
-        color: var(--text-muted);
-        margin-bottom: 1.5rem;
-        font-size: 1rem;
-      }
-      .endpoint-url {
-        display: flex;
-        align-items: center;
-        background-color: var(--bg-sidebar);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 0.5rem;
-        margin-bottom: 2rem;
-        font-family: var(--font-mono);
-        font-size: 0.95rem;
-      }
-      .method-badge {
-        font-weight: 700;
-        font-size: 0.85rem;
-        padding: 0.3rem 0.75rem;
-        border-radius: 6px;
-        margin-right: 1rem;
-      }
-      .method-badge.get {
-        background-color: var(--method-get-bg);
-        color: var(--method-get);
-      }
-      .method-badge.post {
-        background-color: var(--method-post-bg);
-        color: var(--method-post);
-      }
+    /* --- ENDPOINT HEADER --- */
+    .endpoint-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .endpoint-desc {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+    .endpoint-url {
+      display: flex;
+      align-items: center;
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5rem;
+      margin-bottom: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+    }
+    .method-badge {
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      margin-right: 1rem;
+    }
+    .method-badge.get {
+      background-color: var(--method-get-bg);
+      color: var(--method-get);
+    }
+    .method-badge.post {
+      background-color: var(--method-post-bg);
+      color: var(--method-post);
+    }
 
-      /* --- TABLES --- */
-      h3.section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin: 2rem 0 1rem 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 0.5rem;
-      }
-      .table-wrapper {
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 2rem;
-        margin-top: 1rem;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
-      }
-      th,
-      td {
-        padding: 0.875rem 1.25rem;
-        border-bottom: 1px solid var(--border-color);
-        font-size: 0.9rem;
-      }
-      th {
-        background-color: var(--bg-sidebar);
-        font-weight: 600;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 0.05em;
-      }
-      tr:last-child td {
-        border-bottom: none;
-      }
+    /* --- TABLES --- */
+    h3.section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 2rem 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .table-wrapper {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 2rem;
+      margin-top: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th,
+    td {
+      padding: 0.875rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      vertical-align: top;
+    }
+    th {
+      background-color: var(--bg-sidebar);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background-color: #f8fafc;
+    }
 
-      /* Chỉnh lại style cột để phân cấp rõ ràng hơn */
-      .param-name {
-        font-family: var(--font-mono);
-        font-weight: 600;
-        color: var(--text-main);
-      }
-      .param-nested {
-        padding-left: 1.5rem;
-        position: relative;
-      }
-      .param-nested::before {
-        content: '└';
-        position: absolute;
-        left: 0.5rem;
-        color: var(--text-muted);
-      }
+    /* Phân cấp cột (Nesting) */
+    .param-name {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+    .level-1 { padding-left: 2rem !important; position: relative; }
+    .level-1::before { content: '└'; position: absolute; left: 1rem; color: var(--text-muted); }
+    .level-2 { padding-left: 3.5rem !important; position: relative; }
+    .level-2::before { content: '└'; position: absolute; left: 2.5rem; color: var(--text-muted); }
+    .level-3 { padding-left: 5rem !important; position: relative; }
+    .level-3::before { content: '└'; position: absolute; left: 4rem; color: var(--text-muted); }
 
-      .param-type {
-        font-family: var(--font-mono);
-        font-size: 0.8rem;
-        color: var(--accent-blue);
-        background: var(--accent-blue-bg);
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-      }
-      .required-badge {
-        font-size: 0.65rem;
-        color: #dc2626;
-        background-color: #fee2e2;
-        padding: 0.1rem 0.4rem;
-        border-radius: 4px;
-        margin-left: 0.5rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-      .badge {
-        display: inline-block;
-        padding: 0.15rem 0.4rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-family: var(--font-mono);
-        background: #f1f5f9;
-        border: 1px solid #cbd5e1;
-        color: #475569;
-        margin: 0.2rem 0;
-      }
+    .param-type {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-blue);
+      background: var(--accent-blue-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    .required-badge {
+      font-size: 0.65rem;
+      color: #dc2626;
+      background-color: #fee2e2;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-left: 0.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      margin: 0.2rem 0;
+      font-weight: 500;
+    }
+    .desc-text p {
+      margin-bottom: 0.5rem;
+    }
+    .desc-text p:last-child {
+      margin-bottom: 0;
+    }
+    .enum-list {
+      margin-top: 0.5rem;
+      list-style: none;
+      padding-left: 0;
+    }
+    .enum-list li {
+      margin-bottom: 0.25rem;
+      font-size: 0.85rem;
+    }
 
-      /* --- CODE BLOCKS --- */
-      .code-window {
-        background-color: var(--bg-code);
-        border-radius: 8px;
-        border: 1px solid var(--border-code);
-        overflow: hidden;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        margin-top: 1rem;
-      }
-      .code-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.75rem 1.25rem;
-        background-color: rgba(255, 255, 255, 0.05);
-        border-bottom: 1px solid var(--border-code);
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        font-family: var(--font-mono);
-      }
-      .code-status {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #10b981;
-        font-weight: 600;
-      }
-      pre {
-        padding: 1.25rem;
-        overflow-x: auto;
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        line-height: 1.6;
-        color: var(--text-code);
-      }
+    /* --- CODE BLOCKS --- */
+    .code-window {
+      background-color: var(--bg-code);
+      border-radius: 8px;
+      border: 1px solid var(--border-code);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--border-code);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+    }
+    .code-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #10b981;
+      font-weight: 600;
+    }
+    pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-code);
+    }
 
-      /* Syntax Highlighting */
-      .string {
-        color: #a5d6ff;
-      }
-      .number {
-        color: #79c0ff;
-      }
-      .boolean {
-        color: #ff7b72;
-      }
-      .null {
-        color: #ff7b72;
-      }
-      .key {
-        color: #7ee787;
-      }
+    /* Syntax Highlighting */
+    .string { color: #a5d6ff; }
+    .number { color: #79c0ff; }
+    .boolean { color: #ff7b72; }
+    .null { color: #ff7b72; }
+    .key { color: #7ee787; }
 
-      @media (max-width: 768px) {
-        body {
-          flex-direction: column;
-          overflow: auto;
-        }
-        .sidebar {
-          width: 100%;
-          height: auto;
-          border-right: none;
-          border-bottom: 1px solid var(--border-color);
-        }
-        .main-content {
-          padding: 2rem 1.5rem;
-          overflow: visible;
-          height: auto;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <aside class="sidebar">
-      <div class="logo">
-        <i class="fa-solid fa-server"></i>
-        <span>LMS API</span>
-      </div>
-      <ul class="nav-menu">
-        <li class="nav-group-title">Public APIs</li>
-        <li>
-          <a href="#get-survey-result" class="nav-link"><span class="nav-method get">GET</span> Chi tiết khảo sát</a>
-        </li>
-        <li>
-          <a href="#submit-survey-result" class="nav-link"
-            ><span class="nav-method post">POST</span> Nộp bài khảo sát</a
-          >
-        </li>
-      </ul>
-    </aside>
+    @media (max-width: 768px) {
+      body { flex-direction: column; overflow: auto; }
+      .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .main-content { padding: 2rem 1.5rem; overflow: visible; height: auto; }
+    }
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo">
+    <i class="fa-solid fa-server"></i>
+    <span>LMS API</span>
+  </div>
+  <ul class="nav-menu">
+    <li class="nav-group-title">Public APIs</li>
+    <li>
+      <a href="#get-survey-result" class="nav-link"><span class="nav-method get">GET</span> Chi tiết khảo sát</a>
+    </li>
+    <li>
+      <a href="#submit-survey-result" class="nav-link"
+      ><span class="nav-method post">POST</span> Nộp bài khảo sát</a
+      >
+    </li>
+  </ul>
+</aside>
 
-    <main class="main-content">
-      <div class="container">
-        <header>
-          <h1>Survey APIs (Public)</h1>
-          <p class="subtitle">
-            Tài liệu API tích hợp khảo sát dành cho MeviFarm & Bên thứ 3. (Không yêu cầu Authentication)
-          </p>
-        </header>
+<main class="main-content">
+  <div class="container">
+    <header>
+      <h1>Survey APIs (Public)</h1>
+      <p class="subtitle">
+        Tài liệu API tích hợp khảo sát dành cho MeviFarm & Bên thứ 3. (Không yêu cầu Authentication)
+      </p>
+    </header>
 
-        <div class="base-url-block">
-          <h2 class="base-url-title"><i class="fa-solid fa-link"></i> Môi trường & Base URL</h2>
-          <p class="base-url-desc">
-            Tất cả các API endpoint bên dưới đều được nối tiếp vào Base URL này. Vui lòng sử dụng đúng domain theo môi
-            trường tích hợp của bạn.
-          </p>
-          <div class="base-url-code">
-            <span>https://api.xbest.io/lms-survey-service/v1</span>
-            <span
-              style="
+    <div class="base-url-block">
+      <h2 class="base-url-title"><i class="fa-solid fa-link"></i> Môi trường & Base URL</h2>
+      <p class="base-url-desc">
+        Tất cả các API endpoint bên dưới đều được nối tiếp vào Base URL này. Vui lòng sử dụng đúng domain theo môi
+        trường tích hợp của bạn.
+      </p>
+      <div class="base-url-code">
+        <span>https://api.xbest.io/lms-survey-service/v1</span>
+        <span
+                style="
                 font-size: 0.75rem;
                 background: rgba(255, 255, 255, 0.1);
                 padding: 0.2rem 0.5rem;
                 border-radius: 4px;
               "
-              >Production</span
-            >
-          </div>
-        </div>
-
-        <section id="get-survey-result">
-          <h2 class="endpoint-title">Xem chi tiết bài khảo sát</h2>
-          <p class="endpoint-desc">
-            Lấy thông tin định danh người dùng và danh sách câu hỏi trong kỳ khảo sát thông qua email.
-          </p>
-
-          <div class="endpoint-url">
-            <span class="method-badge get">GET</span>
-            <span>/survey-periods/{surveyPeriodId}/results</span>
-          </div>
-
-          <h3 class="section-title">Request Parameters</h3>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>In</th>
-                  <th>Type</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="param-name">surveyPeriodId</span><span class="required-badge">Required</span></td>
-                  <td>path</td>
-                  <td><span class="param-type">integer</span></td>
-                  <td>ID của kỳ khảo sát</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">email</span><span class="required-badge">Required</span></td>
-                  <td>query</td>
-                  <td><span class="param-type">string</span></td>
-                  <td>Email của người tham gia khảo sát</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3 class="section-title">Response Properties (Key Fields)</h3>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Field</th>
-                  <th>Type</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="param-name">status</span></td>
-                  <td><span class="param-type">string</span></td>
-                  <td>
-                    Trạng thái của bài khảo sát:<br />
-                    <span class="badge">not_started</span>: Người dùng chưa làm hoặc chưa nộp.<br />
-                    <span class="badge">submitted</span>: Người dùng đã hoàn thành nộp bài.
-                  </td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">resultQuestions</span></td>
-                  <td><span class="param-type">array</span></td>
-                  <td>Danh sách các câu hỏi thuộc kỳ khảo sát.</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name param-nested">answers</span></td>
-                  <td><span class="param-type">array</span></td>
-                  <td>
-                    Nằm trong mỗi <code>resultQuestions</code>. Mảng này chứa các `id` của câu trả lời đã được sinh sẵn,
-                    FE cần dùng các `id` này để map dữ liệu khi nộp bài.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3 class="section-title">Response Example</h3>
-          <div class="code-window">
-            <div class="code-header">
-              <span>application/json</span>
-              <span class="code-status"><i class="fa-solid fa-circle-check"></i> 200 OK</span>
-            </div>
-            <pre><code id="json-response-1"></code></pre>
-          </div>
-        </section>
-
-        <section id="submit-survey-result">
-          <h2 class="endpoint-title">Nộp bài khảo sát</h2>
-          <p class="endpoint-desc">
-            Gửi kết quả khảo sát. Yêu cầu truyền <code>email</code> trong body để đảm bảo tính định danh và toàn vẹn dữ
-            liệu.
-          </p>
-
-          <div class="endpoint-url">
-            <span class="method-badge post">POST</span>
-            <span>/survey-periods/{surveyPeriodId}/results/submit</span>
-          </div>
-
-          <h3 class="section-title">Path Parameters</h3>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Type</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="param-name">surveyPeriodId</span><span class="required-badge">Required</span></td>
-                  <td><span class="param-type">integer</span></td>
-                  <td>ID của kỳ khảo sát</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3 class="section-title">Body Parameters (application/json)</h3>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Type</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="param-name">email</span><span class="required-badge">Required</span></td>
-                  <td><span class="param-type">string</span></td>
-                  <td>Email định danh của người nộp bài.</td>
-                </tr>
-                <tr>
-                  <td><span class="param-name">dataSubmit</span><span class="required-badge">Required</span></td>
-                  <td><span class="param-type">array</span></td>
-                  <td>Mảng chứa danh sách các câu trả lời.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <span class="param-name param-nested">questionId</span><span class="required-badge">Required</span>
-                  </td>
-                  <td><span class="param-type">integer</span></td>
-                  <td>ID của câu hỏi (Lấy từ mảng <code>resultQuestions</code> ở API GET).</td>
-                </tr>
-                <tr>
-                  <td>
-                    <span class="param-name param-nested">answers</span><span class="required-badge">Required</span>
-                  </td>
-                  <td><span class="param-type">array</span></td>
-                  <td>Mảng chi tiết đáp án cho câu hỏi này.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <span class="param-name" style="padding-left: 3rem; position: relative">
-                      <span style="position: absolute; left: 2rem; color: var(--text-muted)">└</span>answerIds
-                    </span>
-                  </td>
-                  <td><span class="param-type">array</span></td>
-                  <td>Mảng chứa ID của answer (ví dụ: <code>[1824]</code>). Lấy từ API GET.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <span class="param-name" style="padding-left: 3rem; position: relative">
-                      <span style="position: absolute; left: 2rem; color: var(--text-muted)">└</span>content
-                    </span>
-                  </td>
-                  <td><span class="param-type">string</span></td>
-                  <td>Nội dung chữ người dùng điền (đối với câu hỏi dạng tự luận/essay).</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3 class="section-title">Request Example</h3>
-          <div class="code-window">
-            <div class="code-header">
-              <span>application/json (Body Payload)</span>
-            </div>
-            <pre><code id="json-request-2"></code></pre>
-          </div>
-
-          <h3 class="section-title">Response Example</h3>
-          <div class="code-window">
-            <div class="code-header">
-              <span>application/json</span>
-              <span class="code-status"><i class="fa-solid fa-circle-check"></i> 200 OK</span>
-            </div>
-            <pre><code id="json-response-2"></code></pre>
-          </div>
-        </section>
+        >Production</span
+        >
       </div>
-    </main>
+    </div>
 
-    <script>
-      // JS Xử lý bôi màu Code
-      function syntaxHighlight(json) {
-        if (typeof json != 'string') json = JSON.stringify(json, undefined, 2);
-        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return json.replace(
-          /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-          function (match) {
-            var cls = 'number';
-            if (/^"/.test(match)) {
-              if (/:$/.test(match)) {
-                cls = 'key';
-                match = match.replace(/"/g, '');
-              } else {
-                cls = 'string';
-              }
-            } else if (/true|false/.test(match)) cls = 'boolean';
-            else if (/null/.test(match)) cls = 'null';
+    <!-- ==============================================
+         ENDPOINT 1: GET SURVEY RESULT
+    ================================================== -->
+    <section id="get-survey-result">
+      <h2 class="endpoint-title">Xem chi tiết bài khảo sát</h2>
+      <p class="endpoint-desc">
+        Lấy thông tin định danh người dùng và danh sách câu hỏi trong kỳ khảo sát thông qua email. Cung cấp dữ liệu để Frontend dựng giao diện Form khảo sát.
+      </p>
 
-            if (cls === 'key') return '<span class="' + cls + '">"' + match + '"</span>:';
-            return '<span class="' + cls + '">' + match + '</span>';
-          }
-        );
-      }
+      <div class="endpoint-url">
+        <span class="method-badge get">GET</span>
+        <span>/survey-periods/{surveyPeriodId}/results</span>
+      </div>
 
-      // --- FULL MOCK DATA TỪ YÊU CẦU ---
+      <h3 class="section-title">Request Parameters</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>In</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="param-name">surveyPeriodId</span><span class="required-badge">Required</span></td>
+            <td>path</td>
+            <td><span class="param-type">integer</span></td>
+            <td>ID của kỳ khảo sát. Ví dụ: 395</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">email</span><span class="required-badge">Required</span></td>
+            <td>query</td>
+            <td><span class="param-type">string</span></td>
+            <td>Email của người tham gia khảo sát (định danh).</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
 
-      const response1 = {
-        code: 200,
-        message: 'Thành công',
-        data: {
-          id: 3597,
-          userId: '94d6cd6b-2155-4cf3-8009-995a8a6c1dbe',
-          userCode: 'ptsm0001',
-          userName: 'phuong test send mail',
-          positionId: 2696,
-          positionName: 'Chuyên viên RD',
-          departmentId: 1617,
-          departmentName: 'Phòng nghiên cứu thị trường',
-          email: 'monkeydhafy@gmail.com',
-          status: 'not_started',
-          deleted: false,
-          surveyPeriodId: 395,
-          surveyPeriodName: 'Khảo sát câu tự luận',
+      <h3 class="section-title">Response Schema (Chi tiết các trường)</h3>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Phân tích cấu trúc JSON trả về. Các trường đánh dấu <strong>Enum</strong> rất quan trọng để quyết định logic hiển thị UI trên Frontend.
+      </p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th style="width: 30%">Field</th>
+            <th style="width: 15%">Type</th>
+            <th style="width: 55%">Description & Values</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Root -->
+          <tr>
+            <td><span class="param-name">code</span></td>
+            <td><span class="param-type">number</span></td>
+            <td><div class="desc-text"><p>Mã trạng thái trả về từ Application. (Ví dụ: <code>200</code> là thành công)</p></div></td>
+          </tr>
+          <tr>
+            <td><span class="param-name">message</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Thông báo dạng text từ server (hiển thị dạng Toast/Alert nếu cần).</p></div></td>
+          </tr>
+          <tr>
+            <td><span class="param-name">data</span></td>
+            <td><span class="param-type">object</span></td>
+            <td><div class="desc-text"><p>Payload chính chứa toàn bộ thông tin chi tiết của bài làm (Survey Result).</p></div></td>
+          </tr>
+
+          <!-- Data Level 1 -->
+          <tr>
+            <td class="level-1"><span class="param-name">id</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td><div class="desc-text"><p>ID định danh bài làm khảo sát của User này.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">companyId</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td><div class="desc-text"><p>Mã công ty (Định danh tenant/khách hàng trong hệ thống multi-tenant).</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">userId</span></td>
+            <td><span class="param-type">string</span>(UUID)</td>
+            <td><div class="desc-text"><p>ID định danh tài khoản người dùng trên hệ thống LMS.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">userName</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Tên hiển thị của người dùng (dùng để in ra lời chào: "Chào anh/chị X").</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">email</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Email của người làm bài (khớp với email truyền lên).</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">status</span></td>
+            <td><span class="param-type">string</span> (Enum)</td>
+            <td>
+              <div class="desc-text">
+                <p><strong>[Quan trọng]</strong> Trạng thái bài làm của người dùng đối với kỳ khảo sát này:</p>
+                <ul class="enum-list">
+                  <li><span class="badge">not_started</span>: Chưa nộp bài (Frontend hiển thị form cho phép làm bài).</li>
+                  <li><span class="badge">submitted</span>: Đã nộp bài (Frontend hiển thị màn hình báo "Bạn đã hoàn thành khảo sát", khóa form).</li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">surveyPeriodName</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Tên hiển thị của kỳ khảo sát (Hiển thị làm Title màn hình).</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">submittedAt</span></td>
+            <td><span class="param-type">string</span> (Date) | null</td>
+            <td><div class="desc-text"><p>Thời gian nộp bài. Bằng <code>null</code> nếu status là <code>not_started</code>.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">resultQuestions</span></td>
+            <td><span class="param-type">array</span>[object]</td>
+            <td><div class="desc-text"><p>Danh sách toàn bộ các câu hỏi nằm trong kỳ khảo sát này.</p></div></td>
+          </tr>
+
+          <!-- ResultQuestions Level 2 -->
+          <tr>
+            <td class="level-2"><span class="param-name">id</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td><div class="desc-text"><p>ID của câu hỏi. Cần lưu lại để map vào <code>questionId</code> khi gọi API POST nộp bài.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-2"><span class="param-name">code</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Mã code của câu hỏi (Thường dùng để tracking, đánh index hoặc hiển thị mã câu hỏi nếu cần).</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-2"><span class="param-name">companyId</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td><div class="desc-text"><p>Mã công ty phân bổ cho câu hỏi này.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-2"><span class="param-name">type</span></td>
+            <td><span class="param-type">string</span> (Enum)</td>
+            <td>
+              <div class="desc-text">
+                <p><strong>[Định tuyến UI]</strong> Loại câu hỏi. Dựa vào đây FE quyết định render Input, Radio, Checkbox hay Matrix:</p>
+                <ul class="enum-list">
+                  <li><span class="badge">select</span>: Câu hỏi lựa chọn 1 đáp án.</li>
+                  <li><span class="badge">multi_select</span>: Câu hỏi lựa chọn nhiều đáp án.</li>
+                  <li><span class="badge">essay</span>: Tự luận.</li>
+                  <li><span class="badge">linear_range</span>: Câu hỏi phạm vi tuyến tính (ví dụ: đánh giá 1-5 sao).</li>
+                  <li><span class="badge">single_choice_matrix</span>: Câu hỏi ma trận một lựa chọn (Radio Matrix).</li>
+                  <li><span class="badge">multi_choice_matrix</span>: Câu hỏi ma trận nhiều lựa chọn (Checkbox Matrix).</li>
+                  <li><span class="badge">linear_matrix</span>: Câu hỏi ma trận tuyến tính.</li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="level-2"><span class="param-name">content</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Nội dung câu hỏi dạng text thuần (dùng nếu không hỗ trợ HTML).</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-2"><span class="param-name">contentRich</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Nội dung câu hỏi có format HTML (VD: có in đậm, xuống dòng, thẻ <code>&lt;p&gt;</code>). FE ưu tiên dùng trường này để render bằng <code>v-html</code> hoặc <code>dangerouslySetInnerHTML</code>.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-2"><span class="param-name">answers</span></td>
+            <td><span class="param-type">array</span>[object]</td>
+            <td><div class="desc-text"><p>Danh sách các cấu trúc đáp án. Chứa <code>id</code> bắt buộc phải gửi lại server khi user trả lời.</p></div></td>
+          </tr>
+
+          <!-- Answers Level 3 -->
+          <tr>
+            <td class="level-3"><span class="param-name">id</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td><div class="desc-text"><p><strong>[Rất quan trọng]</strong> ID định danh của đáp án này. <br/>Dù là câu Tự luận (essay), hệ thống vẫn sinh sẵn 1 object answer, FE phải lấy `id` này truyền vào mảng `answerIds` khi nộp bài.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-3"><span class="param-name">content</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Nội dung text của đáp án (Dành cho câu trắc nghiệm hiển thị label "A, B, C, D"). Nếu là câu `essay`, trường này thường rỗng từ server trả về.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-3"><span class="param-name">isOther</span></td>
+            <td><span class="param-type">boolean</span> | null</td>
+            <td><div class="desc-text"><p>Cờ xác định đáp án có phải dạng "Khác (vui lòng điền rõ)" hay không. Nếu `true`, FE cần render thêm 1 ô input text đi kèm khi user chọn đáp án này.</p></div></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="section-title">Response Example</h3>
+      <div class="code-window">
+        <div class="code-header">
+          <span>application/json</span>
+          <span class="code-status"><i class="fa-solid fa-circle-check"></i> 200 OK</span>
+        </div>
+        <pre><code id="json-response-1"></code></pre>
+      </div>
+    </section>
+
+    <!-- ==============================================
+         ENDPOINT 2: POST SUBMIT SURVEY
+    ================================================== -->
+    <section id="submit-survey-result">
+      <h2 class="endpoint-title">Nộp bài khảo sát</h2>
+      <p class="endpoint-desc">
+        API ghi nhận kết quả làm bài của User. Yêu cầu truyền <code>email</code> trong body để đảm bảo tính định danh và toàn vẹn dữ liệu. Cấu trúc dataSubmit được map dựa trên ID câu hỏi và ID đáp án đã lấy từ API GET.
+      </p>
+
+      <div class="endpoint-url">
+        <span class="method-badge post">POST</span>
+        <span>/survey-periods/{surveyPeriodId}/results/submit</span>
+      </div>
+
+      <h3 class="section-title">Path Parameters</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="param-name">surveyPeriodId</span><span class="required-badge">Required</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td>ID của kỳ khảo sát</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="section-title">Body Parameters (application/json)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th style="width: 30%">Parameter</th>
+            <th style="width: 15%">Type</th>
+            <th style="width: 55%">Description & Rules</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><span class="param-name">email</span><span class="required-badge">Required</span></td>
+            <td><span class="param-type">string</span></td>
+            <td><div class="desc-text"><p>Email định danh của người nộp bài. Phải khớp với email đã gọi ở API GET.</p></div></td>
+          </tr>
+          <tr>
+            <td><span class="param-name">dataSubmit</span><span class="required-badge">Required</span></td>
+            <td><span class="param-type">array</span>[object]</td>
+            <td><div class="desc-text"><p>Mảng chứa danh sách kết quả làm bài của từng câu hỏi.</p></div></td>
+          </tr>
+
+          <!-- dataSubmit level 1 -->
+          <tr>
+            <td class="level-1"><span class="param-name">questionId</span><span class="required-badge">Required</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td><div class="desc-text"><p>ID của câu hỏi. Lấy từ <code>resultQuestions[i].id</code> ở API GET.</p></div></td>
+          </tr>
+          <tr>
+            <td class="level-1"><span class="param-name">answers</span><span class="required-badge">Required</span></td>
+            <td><span class="param-type">array</span>[object]</td>
+            <td><div class="desc-text"><p>Mảng chứa chi tiết dữ liệu người dùng trả lời cho câu hỏi này.</p></div></td>
+          </tr>
+
+          <!-- answers level 2 -->
+          <tr>
+            <td class="level-2"><span class="param-name">answerIds</span><span class="required-badge">Required</span></td>
+            <td><span class="param-type">array</span>[integer]</td>
+            <td>
+              <div class="desc-text">
+                <p>Mảng chứa ID của các đáp án người dùng đã chọn. (Lấy từ <code>resultQuestions[i].answers[j].id</code>).</p>
+                <ul class="enum-list">
+                  <li><strong>Trắc nghiệm 1 đáp án:</strong> Truyền mảng 1 phần tử VD: <code>[1824]</code></li>
+                  <li><strong>Trắc nghiệm nhiều đáp án:</strong> Truyền mảng nhiều phần tử VD: <code>[1824, 1825]</code></li>
+                  <li><strong>Tự luận (essay):</strong> Vẫn phải truyền mảng chứa ID của answer placeholder được server trả về ban đầu.</li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="level-2"><span class="param-name">content</span></td>
+            <td><span class="param-type">string</span></td>
+            <td>
+              <div class="desc-text">
+                <p>Nội dung text do người dùng điền vào.</p>
+                <ul class="enum-list">
+                  <li>Bắt buộc nếu câu hỏi là dạng Tự luận (<code>essay</code>).</li>
+                  <li>Bắt buộc nếu user tick vào đáp án có cờ <code>isOther = true</code> (Mục "Khác...").</li>
+                  <li>Các trường hợp chọn trắc nghiệm thông thường có thể để chuỗi rỗng <code>""</code> hoặc lược bỏ.</li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="section-title">Request Example</h3>
+      <div class="code-window">
+        <div class="code-header">
+          <span>application/json (Body Payload)</span>
+        </div>
+        <pre><code id="json-request-2"></code></pre>
+      </div>
+
+      <h3 class="section-title">Response Example</h3>
+      <div class="code-window">
+        <div class="code-header">
+          <span>application/json</span>
+          <span class="code-status"><i class="fa-solid fa-circle-check"></i> 200 OK</span>
+        </div>
+        <pre><code id="json-response-2"></code></pre>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  // JS Xử lý bôi màu Code (Syntax Highlight)
+  function syntaxHighlight(json) {
+    if (typeof json != 'string') json = JSON.stringify(json, undefined, 2);
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(
+            /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+            function (match) {
+              var cls = 'number';
+              if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                  cls = 'key';
+                  match = match.replace(/"/g, '');
+                } else {
+                  cls = 'string';
+                }
+              } else if (/true|false/.test(match)) cls = 'boolean';
+              else if (/null/.test(match)) cls = 'null';
+
+              if (cls === 'key') return '<span class="' + cls + '">"' + match + '"</span>:';
+              return '<span class="' + cls + '">' + match + '</span>';
+            }
+    );
+  }
+
+  // --- MOCK DATA ---
+
+  const response1 = {
+    code: 200,
+    message: 'Thành công',
+    data: {
+      id: 3597,
+      userId: '94d6cd6b-2155-4cf3-8009-995a8a6c1dbe',
+      userCode: 'ptsm0001',
+      userName: 'phuong test send mail',
+      positionId: 2696,
+      positionName: 'Chuyên viên RD',
+      departmentId: 1617,
+      departmentName: 'Phòng nghiên cứu thị trường',
+      email: 'monkeydhafy@gmail.com',
+      status: 'not_started',
+      deleted: false,
+      surveyPeriodId: 395,
+      surveyPeriodName: 'Khảo sát câu tự luận',
+      companyId: 157,
+      submittedAt: null,
+      createdAt: '2026-04-27T09:42:37.000Z',
+      createdBy: 'aabcb11e-bae3-45e0-8e40-918e0784d846',
+      resultQuestions: [
+        {
+          code: 'ks29',
           companyId: 157,
-          submittedAt: null,
-          createdAt: '2026-04-27T09:42:37.000Z',
+          content:
+                  'Bạn có cảm thấy thành thạo và tự tin khi kết thúc chương trình đào tạo không? Hãy chia sẻ bất kỳ quan điểm nào của bạn',
+          contentRich:
+                  '<p>Bạn có cảm thấy thành thạo và tự tin khi kết thúc chương trình đào tạo không? Hãy chia sẻ bất kỳ quan điểm nào của bạn</p>',
+          createdAt: '2026-04-03T07:17:15.000Z',
           createdBy: 'aabcb11e-bae3-45e0-8e40-918e0784d846',
-          resultQuestions: [
+          id: 1029,
+          linearRangeFromLabel: null,
+          linearRangeToLabel: null,
+          questionTopicId: 69,
+          status: 'completed',
+          type: 'essay',
+          note: null,
+          answers: [
             {
-              code: 'ks29',
+              id: 1824,
               companyId: 157,
-              content:
-                'Bạn có cảm thấy thành thạo và tự tin khi kết thúc chương trình đào tạo không? Hãy chia sẻ bất kỳ quan điểm nào của bạn',
-              contentRich:
-                '<p>Bạn có cảm thấy thành thạo và tự tin khi kết thúc chương trình đào tạo không? Hãy chia sẻ bất kỳ quan điểm nào của bạn</p>',
-              createdAt: '2026-04-03T07:17:15.000Z',
-              createdBy: 'aabcb11e-bae3-45e0-8e40-918e0784d846',
-              id: 1029,
-              linearRangeFromLabel: null,
-              linearRangeToLabel: null,
-              questionTopicId: 69,
-              status: 'completed',
-              type: 'essay',
-              note: null,
-              answers: [
-                {
-                  id: 1824,
-                  companyId: 157,
-                  content: '',
-                  questionId: 1029,
-                  sortIndex: null,
-                  isRow: null,
-                  isOther: null,
-                },
-              ],
-            },
-            {
-              code: 'P003',
-              companyId: 157,
-              content: 'Nội dung bài học có phù hợp với bạn không?',
-              contentRich: '<p>Nội dung bài học có phù hợp với bạn không?</p>',
-              createdAt: '2026-01-30T08:37:59.000Z',
-              createdBy: '59ea24d6-ae84-4e29-be00-49c228256d12',
-              id: 774,
-              linearRangeFromLabel: null,
-              linearRangeToLabel: null,
-              questionTopicId: 159,
-              status: 'completed',
-              type: 'essay',
-              note: null,
-              answers: [
-                {
-                  id: 3587,
-                  companyId: 157,
-                  content: '',
-                  questionId: 774,
-                  sortIndex: null,
-                  isRow: null,
-                  isOther: null,
-                },
-              ],
-            },
-            {
-              code: 'ks27',
-              companyId: 157,
-              content: 'Các chủ đề cụ thể chính mà bạn muốn tìm hiểu thêm là gì?',
-              contentRich: '<p>Các chủ đề cụ thể chính mà bạn muốn tìm hiểu thêm là gì?</p>',
-              createdAt: '2024-09-30T09:22:23.000Z',
-              createdBy: '41e0f8f0-6a5b-461e-bdf7-3009f43893e8',
-              id: 227,
-              linearRangeFromLabel: null,
-              linearRangeToLabel: null,
-              questionTopicId: 69,
-              status: 'completed',
-              type: 'essay',
-              note: null,
-              answers: [
-                {
-                  id: 1817,
-                  companyId: 157,
-                  content: '',
-                  questionId: 227,
-                  sortIndex: null,
-                  isRow: null,
-                  isOther: null,
-                },
-              ],
+              content: '',
+              questionId: 1029,
+              sortIndex: null,
+              isRow: null,
+              isOther: null,
             },
           ],
         },
-      };
+        {
+          code: 'P003',
+          companyId: 157,
+          content: 'Nội dung bài học có phù hợp với bạn không?',
+          contentRich: '<p>Nội dung bài học có phù hợp với bạn không?</p>',
+          createdAt: '2026-01-30T08:37:59.000Z',
+          createdBy: '59ea24d6-ae84-4e29-be00-49c228256d12',
+          id: 774,
+          linearRangeFromLabel: null,
+          linearRangeToLabel: null,
+          questionTopicId: 159,
+          status: 'completed',
+          type: 'essay',
+          note: null,
+          answers: [
+            {
+              id: 3587,
+              companyId: 157,
+              content: '',
+              questionId: 774,
+              sortIndex: null,
+              isRow: null,
+              isOther: null,
+            },
+          ],
+        },
+        {
+          code: 'ks27',
+          companyId: 157,
+          content: 'Các chủ đề cụ thể chính mà bạn muốn tìm hiểu thêm là gì?',
+          contentRich: '<p>Các chủ đề cụ thể chính mà bạn muốn tìm hiểu thêm là gì?</p>',
+          createdAt: '2024-09-30T09:22:23.000Z',
+          createdBy: '41e0f8f0-6a5b-461e-bdf7-3009f43893e8',
+          id: 227,
+          linearRangeFromLabel: null,
+          linearRangeToLabel: null,
+          questionTopicId: 69,
+          status: 'completed',
+          type: 'essay',
+          note: null,
+          answers: [
+            {
+              id: 1817,
+              companyId: 157,
+              content: '',
+              questionId: 227,
+              sortIndex: null,
+              isRow: null,
+              isOther: null,
+            },
+          ],
+        },
+      ],
+    },
+  };
 
-      const request2 = {
-        email: 'knl02@edtexco.com',
-        dataSubmit: [
+  const request2 = {
+    email: 'knl02@edtexco.com',
+    dataSubmit: [
+      {
+        questionId: 1029,
+        answers: [
           {
-            questionId: 1029,
-            answers: [
-              {
-                answerIds: [1824],
-                content: 'Tôi không',
-              },
-            ],
-          },
-          {
-            questionId: 774,
-            answers: [
-              {
-                answerIds: [3587],
-                content: 'Bài học rất hay, thú vị, cách xây đựng nội dung tối nhưng...',
-              },
-            ],
-          },
-          {
-            questionId: 227,
-            answers: [
-              {
-                answerIds: [1817],
-                content: 'Lập trình',
-              },
-            ],
+            answerIds: [1824],
+            content: 'Tôi không',
           },
         ],
-      };
+      },
+      {
+        questionId: 774,
+        answers: [
+          {
+            answerIds: [3587],
+            content: 'Bài học rất hay, thú vị, cách xây dựng nội dung tốt nhưng...',
+          },
+        ],
+      },
+      {
+        questionId: 227,
+        answers: [
+          {
+            answerIds: [1817],
+            content: 'Lập trình frontend với Vue3',
+          },
+        ],
+      },
+    ],
+  };
 
-      const response2 = {
-        code: 200,
-        message: 'Thành công',
-        data: true,
-      };
+  const response2 = {
+    code: 200,
+    message: 'Thành công',
+    data: true,
+  };
 
-      // Gắn data vào DOM
-      document.getElementById('json-response-1').innerHTML = syntaxHighlight(response1);
-      document.getElementById('json-request-2').innerHTML = syntaxHighlight(request2);
-      document.getElementById('json-response-2').innerHTML = syntaxHighlight(response2);
-    </script>
-  </body>
+  // Mount data to DOM
+  document.getElementById('json-response-1').innerHTML = syntaxHighlight(response1);
+  document.getElementById('json-request-2').innerHTML = syntaxHighlight(request2);
+  document.getElementById('json-response-2').innerHTML = syntaxHighlight(response2);
+</script>
+</body>
 </html>
