@@ -152,6 +152,21 @@
           "tags": ["External API — API cho bên thứ ba"],
           "security": [{ "headerAuth": [] }]
         }
+      },
+      "/v1/external/users/roles": {
+        "put": {
+          "operationId": "ExternalApiController_updateRoleByPhoneOrEmail",
+          "summary": "Cập nhật vai trò nhân sự bằng số điện thoại hoặc email",
+          "description": "Cập nhật batch vai trò của nhân sự bằng số điện thoại hoặc email. Bản ghi khớp theo phone hoặc email. Gán vai trò theo các mã trong enum MeviEduRole.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateRoleByPhoneOrEmailRequest" } } } },
+          "responses": {
+            "200": { "description": "Kết quả cập nhật vai trò", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
       }
     },
     "components": {
@@ -168,7 +183,7 @@
         "ExternalPositionUserItem": { "type": "object", "properties": { "departmentCode": { "type": "string", "description": "Mã phòng ban", "example": "PB-IT" }, "positionCode": { "type": "string", "description": "Mã chức danh", "example": "CD-TP" }, "isMain": { "type": "boolean", "description": "Là vị trí chính", "example": true, "default": false }, "isRepresent": { "type": "boolean", "description": "Là đại diện", "example": false, "default": false } }, "required": ["departmentCode", "positionCode"] },
         "ExternalUserItem": { "type": "object", "properties": { "code": { "type": "string", "description": "Mã nhân viên", "example": "NV001" }, "fullName": { "type": "string", "description": "Họ tên đầy đủ", "example": "Nguyễn Văn A" }, "email": { "type": "string", "description": "Email", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại", "example": "0901234567" }, "address": { "type": "string", "description": "Địa chỉ", "example": "TP.HCM" }, "gender": { "type": "number", "description": "Giới tính: 0=Nữ, 1=Nam, 2=Khác", "example": 1 }, "birthday": { "type": "string", "description": "Ngày sinh (YYYY-MM-DD)", "example": "1990-05-15" }, "roleId": { "type": "number", "description": "ID role trong hệ thống", "example": 3 }, "positionUsers": { "description": "Danh sách vị trí công tác", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionUserItem" } } }, "required": ["code", "fullName", "email", "roleId"] },
         "ExternalUserCreateRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần tạo", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUserItem" } } }, "required": ["users"] },
-        "ExternalSyncErrorDetail": { "type": "object", "properties": { "index": { "type": "number", "description": "Index trong mảng request", "example": 0 }, "code": { "type": "string", "description": "Mã định danh", "example": "NV001" }, "message": { "type": "string", "description": "Thông báo lỗi", "example": "Mã phòng ban PB-XYZ không tồn tại" } }, "required": ["index", "code", "message"] },
+        "ExternalSyncErrorDetail": { "type": "object", "properties": { "index": { "type": "number", "description": "Index trong mảng request", "example": 0 }, "code": { "type": "string", "description": "Mã định danh (Số điện thoại / Email / Mã nhân sự)", "example": "03349137902" }, "message": { "type": "string", "description": "Thông báo lỗi", "example": "Không tìm thấy nhân sự có thông tin trùng khớp trên hệ thống" } }, "required": ["index", "code", "message"] },
         "ExternalSyncResultResponse": { "type": "object", "properties": { "total": { "type": "number", "description": "Tổng số bản ghi nhận được", "example": 5 }, "created": { "type": "number", "description": "Số bản ghi tạo thành công", "example": 3 }, "updated": { "type": "number", "description": "Số bản ghi cập nhật thành công", "example": 1 }, "errors": { "type": "number", "description": "Số bản ghi lỗi", "example": 1 }, "errorDetails": { "description": "Chi tiết lỗi từng bản ghi", "type": "array", "items": { "$ref": "#/components/schemas/ExternalSyncErrorDetail" } } }, "required": ["total", "created", "updated", "errors", "errorDetails"] },
         "ExternalUserUpdateRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUserItem" } } }, "required": ["users"] },
         "ExternalDepartmentItem": { "type": "object", "properties": { "code": { "type": "string", "description": "Mã phòng ban", "example": "PB-IT" }, "name": { "type": "string", "description": "Tên phòng ban", "example": "Phòng Công nghệ thông tin" }, "address": { "type": "string", "description": "Địa chỉ", "example": "Tầng 5, Tòa A" }, "phone": { "type": "string", "description": "Số điện thoại", "example": "02812345678" }, "description": { "type": "string", "description": "Mô tả" }, "parentCode": { "type": "string", "description": "Mã phòng ban cha", "example": "PB-ROOT" } }, "required": ["code", "name"] },
@@ -176,7 +191,10 @@
         "ExternalDepartmentUpdateRequest": { "type": "object", "properties": { "departments": { "description": "Danh sách phòng ban cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalDepartmentItem" } } }, "required": ["departments"] },
         "ExternalPositionItem": { "type": "object", "properties": { "code": { "type": "string", "description": "Mã chức danh", "example": "CD-TP" }, "name": { "type": "string", "description": "Tên chức danh", "example": "Trưởng phòng" }, "description": { "type": "string", "description": "Mô tả" }, "parentCode": { "type": "string", "description": "Mã chức danh cha", "example": "CD-ROOT" }, "departmentCodes": { "description": "Danh sách mã phòng ban áp dụng", "example": ["PB-IT", "PB-HR"], "type": "array", "items": { "type": "string" } } }, "required": ["code", "name", "departmentCodes"] },
         "ExternalPositionCreateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần tạo", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] },
-        "ExternalPositionUpdateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] }
+        "ExternalPositionUpdateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] },
+        "MeviEduRole": { "type": "string", "enum": ["mevi_edu_admin", "mevi_edu_trainees", "mevi_edu_lecturer"], "x-enum-descriptions": ["Quản trị viên", "Học viên", "Giảng viên"], "description": "Vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "example": "mevi_edu_trainees" },
+        "ExternalUpdateRoleItem": { "type": "object", "properties": { "email": { "type": "string", "description": "Email định danh nhân sự", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại định danh nhân sự", "example": "0901234567" }, "roles": { "type": "array", "description": "Danh sách vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "items": { "$ref": "#/components/schemas/MeviEduRole" } } }, "required": ["roles"] },
+        "ExternalUpdateRoleByPhoneOrEmailRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật vai trò", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateRoleItem" } } }, "required": ["users"] }
       }
     }
   }
