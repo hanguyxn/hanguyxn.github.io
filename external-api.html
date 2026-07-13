@@ -167,6 +167,21 @@
           "tags": ["External API — API cho bên thứ ba"],
           "security": [{ "headerAuth": [] }]
         }
+      },
+      "/v1/external/users/status": {
+        "put": {
+          "operationId": "ExternalApiController_updateStatus",
+          "summary": "Cập nhật trạng thái nhân sự bằng mã nhân viên",
+          "description": "Cập nhật batch trạng thái của nhân sự theo mã nhân viên (userCode).",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateStatusRequest" } } } },
+          "responses": {
+            "200": { "description": "Kết quả cập nhật", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
       }
     },
     "components": {
@@ -194,7 +209,9 @@
         "ExternalPositionUpdateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] },
         "MeviEduRole": { "type": "string", "enum": ["mevi_edu_admin", "mevi_edu_trainees", "mevi_edu_lecturer"], "x-enum-descriptions": ["Quản trị viên", "Học viên", "Giảng viên"], "description": "Vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "example": "mevi_edu_trainees" },
         "ExternalUpdateRoleItem": { "type": "object", "properties": { "email": { "type": "string", "description": "Email định danh nhân sự", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại định danh nhân sự", "example": "0901234567" }, "roles": { "type": "array", "description": "Danh sách vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "items": { "$ref": "#/components/schemas/MeviEduRole" } } }, "required": ["roles"] },
-        "ExternalUpdateRoleByPhoneOrEmailRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật vai trò", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateRoleItem" } } }, "required": ["users"] }
+        "ExternalUpdateRoleByPhoneOrEmailRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật vai trò", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateRoleItem" } } }, "required": ["users"] },
+        "ExternalUpdateStatusItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên", "example": "NV001" }, "status": { "type": "string", "description": "Trạng thái tài khoản: ACTIVE, INACTIVE", "example": "ACTIVE", "enum": ["ACTIVE", "INACTIVE"] } }, "required": ["userCode", "status"] },
+        "ExternalUpdateStatusRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật trạng thái", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateStatusItem" } } }, "required": ["users"] }
       }
     }
   }
