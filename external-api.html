@@ -182,6 +182,36 @@
           "tags": ["External API — API cho bên thứ ba"],
           "security": [{ "headerAuth": [] }]
         }
+      },
+      "/v1/external/mevi/referrals": {
+        "put": {
+          "operationId": "ExternalApiController_updateMeviReferrals",
+          "summary": "Cập nhật danh sách người giới thiệu (MEVI Referral Metadata)",
+          "description": "Cập nhật/đồng bộ danh sách Người giới thiệu (gồm Tên, SĐT, Tỉnh, Xã) cho trường metadata MEVI (mặc định mã REF). Tự động gộp dữ liệu (UPSERT) để giữ nguyên danh sách người giới thiệu cũ.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateMeviReferralsRequest" } } } },
+          "responses": {
+            "200": { "description": "Kết quả cập nhật", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
+      },
+      "/v1/external/users/metadata": {
+        "put": {
+          "operationId": "ExternalApiController_updateUserMetadata",
+          "summary": "Cập nhật người giới thiệu / metadata cho nhân sự",
+          "description": "Cập nhật/gán người giới thiệu (bằng referrerPhone/SĐT) hoặc các trường metadata mở rộng cho nhân sự. Định danh nhân sự linh hoạt theo email, số điện thoại (phone), hoặc mã nhân viên (userCode).",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateUserMetadataRequest" } } } },
+          "responses": {
+            "200": { "description": "Kết quả cập nhật metadata nhân sự", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
       }
     },
     "components": {
@@ -211,7 +241,13 @@
         "ExternalUpdateRoleItem": { "type": "object", "properties": { "email": { "type": "string", "description": "Email định danh nhân sự", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại định danh nhân sự", "example": "0901234567" }, "roles": { "type": "array", "description": "Danh sách vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "items": { "$ref": "#/components/schemas/MeviEduRole" } } }, "required": ["roles"] },
         "ExternalUpdateRoleByPhoneOrEmailRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật vai trò", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateRoleItem" } } }, "required": ["users"] },
         "ExternalUpdateStatusItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên", "example": "NV001" }, "status": { "type": "string", "description": "Trạng thái tài khoản: ACTIVE, INACTIVE", "example": "ACTIVE", "enum": ["ACTIVE", "INACTIVE"] } }, "required": ["userCode", "status"] },
-        "ExternalUpdateStatusRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật trạng thái", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateStatusItem" } } }, "required": ["users"] }
+        "ExternalUpdateStatusRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật trạng thái", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateStatusItem" } } }, "required": ["users"] },
+        "ExternalMeviOptionMetadataItem": { "type": "object", "properties": { "key": { "type": "string", "description": "Key thuộc tính (e.g. full_name, phone, province, commune)", "example": "full_name" }, "label": { "type": "string", "description": "Tên nhãn thuộc tính", "example": "Tên người giới thiệu" }, "dataType": { "type": "string", "enum": ["STRING", "NUMBER", "DATE"], "example": "STRING" }, "stringValue": { "type": "string", "description": "Giá trị dạng chuỗi", "example": "Nguyễn Văn A" }, "numberValue": { "type": "number", "description": "Giá trị dạng số", "example": 100 }, "dateValue": { "type": "string", "description": "Giá trị dạng ngày (YYYY-MM-DD)", "example": "2026-01-01" } }, "required": ["key", "label", "dataType"] },
+        "ExternalMeviReferralOptionItem": { "type": "object", "properties": { "name": { "type": "string", "description": "Họ tên người giới thiệu", "example": "Nguyễn Văn A" }, "phone": { "type": "string", "description": "Số điện thoại / Mã người giới thiệu", "example": "0912345678" }, "province": { "type": "string", "description": "Tỉnh / Thành phố", "example": "Hà Nội" }, "commune": { "type": "string", "description": "Xã / Phường", "example": "Phường Dịch Vọng Hậu" }, "label": { "type": "string", "description": "Tên hiển thị tùy chỉnh (Mặc định: Tên - SĐT)", "example": "Nguyễn Văn A - 0912345678" }, "value": { "type": "string", "description": "Giá trị tùy chỉnh (Mặc định: SĐT)", "example": "0912345678" }, "metadata": { "type": "array", "description": "Danh sách thuộc tính đi kèm bổ sung", "items": { "$ref": "#/components/schemas/ExternalMeviOptionMetadataItem" } } }, "required": ["name", "phone"] },
+        "ExternalUpdateMeviReferralsRequest": { "type": "object", "properties": { "fieldCode": { "type": "string", "description": "Mã trường metadata (Mặc định: REF)", "example": "REF", "default": "REF" }, "fieldName": { "type": "string", "description": "Tên trường metadata (Mặc định: Người giới thiệu)", "example": "Người giới thiệu", "default": "Người giới thiệu" }, "referrals": { "type": "array", "description": "Danh sách người giới thiệu", "items": { "$ref": "#/components/schemas/ExternalMeviReferralOptionItem" } } }, "required": ["referrals"] },
+        "ExternalUserMetadataValueItem": { "type": "object", "properties": { "fieldCode": { "type": "string", "description": "Mã trường metadata (e.g. REF...)", "example": "REF" }, "value": { "type": "string", "description": "Giá trị metadata của user", "example": "0912345678" } }, "required": ["fieldCode"] },
+        "ExternalUserMetadataUpdateItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên (Định danh 1 trong 3: userCode, email, phone)", "example": "NV001" }, "email": { "type": "string", "description": "Email nhân sự (Định danh 1 trong 3: userCode, email, phone)", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại nhân sự (Định danh 1 trong 3: userCode, email, phone)", "example": "0901234567" }, "referrerPhone": { "type": "string", "description": "Số điện thoại / Mã người giới thiệu", "example": "0912345678" }, "referrerName": { "type": "string", "description": "Họ tên người giới thiệu (Tùy chọn)", "example": "Nguyễn Văn A" }, "province": { "type": "string", "description": "Tỉnh / Thành phố người giới thiệu", "example": "Hà Nội" }, "commune": { "type": "string", "description": "Xã / Phường người giới thiệu", "example": "Phường Dịch Vọng Hậu" }, "metadata": { "type": "array", "description": "Danh sách các trường metadata mở rộng khác", "items": { "$ref": "#/components/schemas/ExternalUserMetadataValueItem" } } } },
+        "ExternalUpdateUserMetadataRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật người giới thiệu / metadata", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUserMetadataUpdateItem" } } }, "required": ["users"] }
       }
     }
   }
