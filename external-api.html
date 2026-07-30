@@ -156,8 +156,8 @@
       "/v1/external/users/roles": {
         "put": {
           "operationId": "ExternalApiController_updateRoleByPhoneOrEmail",
-          "summary": "Cập nhật vai trò nhân sự bằng số điện thoại hoặc email (Dành riêng cho MEVI)",
-          "description": "Cập nhật batch vai trò của nhân sự bằng số điện thoại hoặc email (Dành riêng cho MEVI). Bản ghi khớp theo phone hoặc email. Gán vai trò theo các mã trong enum MeviEduRole.",
+          "summary": "Cập nhật vai trò nhân sự (Dành riêng cho MEVI)",
+          "description": "Cập nhật batch vai trò của nhân sự cho MEVI. Bản ghi khớp linh hoạt theo mã định danh tài khoản (code - SSO OIDC Claims, userCode), số điện thoại (phone) hoặc email. Gán vai trò theo các mã trong enum MeviEduRole.",
           "parameters": [],
           "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateRoleByPhoneOrEmailRequest" } } } },
           "responses": {
@@ -171,8 +171,8 @@
       "/v1/external/users/status": {
         "put": {
           "operationId": "ExternalApiController_updateStatus",
-          "summary": "Cập nhật trạng thái nhân sự bằng mã nhân viên",
-          "description": "Cập nhật batch trạng thái của nhân sự theo mã nhân viên (userCode).",
+          "summary": "Cập nhật trạng thái nhân sự bằng mã định danh (code / userCode)",
+          "description": "Cập nhật batch trạng thái của nhân sự theo mã định danh tài khoản (code - SSO OIDC Claims hoặc userCode).",
           "parameters": [],
           "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateStatusRequest" } } } },
           "responses": {
@@ -202,11 +202,26 @@
         "put": {
           "operationId": "ExternalApiController_updateUserMetadata",
           "summary": "Cập nhật người giới thiệu cho nhân sự",
-          "description": "Cập nhật/gán người giới thiệu (bằng referrerPhone) cho nhân sự qua số điện thoại (phone) hoặc email.",
+          "description": "Cập nhật/gán người giới thiệu (bằng referrerPhone) cho nhân sự qua mã định danh (code - SSO OIDC Claims, userCode), số điện thoại (phone) hoặc email.",
           "parameters": [],
           "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateUserMetadataRequest" } } } },
           "responses": {
             "200": { "description": "Kết quả cập nhật", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
+            "401": { "description": "Token không hợp lệ hoặc không có quyền" }
+          },
+          "tags": ["External API — API cho bên thứ ba"],
+          "security": [{ "headerAuth": [] }]
+        }
+      },
+      "/v1/external/mevi/referrals/promote": {
+        "put": {
+          "operationId": "ExternalApiController_promoteDemoteReferrers",
+          "summary": "Promote / Demote người giới thiệu (Thêm vào hoặc loại khỏi danh sách NGT)",
+          "description": "Chuyển tài khoản đã tồn tại trở thành Người giới thiệu (PROMOTE) hoặc loại ra khỏi danh sách người giới thiệu (DEMOTE). Khớp theo mã định danh tài khoản (code - SSO OIDC Claims, userCode), số điện thoại (phone), hoặc email.",
+          "parameters": [],
+          "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalPromoteDemoteReferrersRequest" } } } },
+          "responses": {
+            "200": { "description": "Kết quả xử lý", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalSyncResultResponse" } } } },
             "401": { "description": "Token không hợp lệ hoặc không có quyền" }
           },
           "tags": ["External API — API cho bên thứ ba"],
@@ -239,14 +254,16 @@
         "ExternalPositionCreateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần tạo", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] },
         "ExternalPositionUpdateRequest": { "type": "object", "properties": { "positions": { "description": "Danh sách chức danh cần cập nhật", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPositionItem" } } }, "required": ["positions"] },
         "MeviEduRole": { "type": "string", "enum": ["mevi_edu_admin", "mevi_edu_trainees", "mevi_edu_lecturer"], "x-enum-descriptions": ["Quản trị viên", "Học viên", "Giảng viên"], "description": "Vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "example": "mevi_edu_trainees" },
-        "ExternalUpdateRoleItem": { "type": "object", "properties": { "email": { "type": "string", "description": "Email định danh nhân sự", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại định danh nhân sự", "example": "0901234567" }, "roles": { "type": "array", "description": "Danh sách vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "items": { "$ref": "#/components/schemas/MeviEduRole" } } }, "required": ["roles"] },
-        "ExternalUpdateRoleByPhoneOrEmailRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật vai trò", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateRoleItem" } } }, "required": ["users"] },
-        "ExternalUpdateStatusItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên", "example": "NV001" }, "status": { "type": "string", "description": "Trạng thái tài khoản: ACTIVE, INACTIVE", "example": "ACTIVE", "enum": ["ACTIVE", "INACTIVE"] } }, "required": ["userCode", "status"] },
+        "ExternalUpdateRoleItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên", "example": "U0000194" }, "email": { "type": "string", "description": "Email định danh nhân sự", "example": "a@company.com" }, "phone": { "type": "string", "description": "Số điện thoại định danh nhân sự", "example": "0901234567" }, "roles": { "type": "array", "description": "Danh sách vai trò MEVI EDU (mevi_edu_admin: Quản trị viên, mevi_edu_trainees: Học viên, mevi_edu_lecturer: Giảng viên)", "items": { "$ref": "#/components/schemas/MeviEduRole" } } }, "required": ["roles"] },
+        "ExternalUpdateRoleByPhoneOrEmailRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật vai trò", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateRoleItem" } } }, "required": ["users"], "example": { "users": [ { "userCode": "U0000194", "roles": ["mevi_edu_trainees"] }, { "email": "a@company.com", "roles": ["mevi_edu_lecturer"] } ] } },
+        "ExternalUpdateStatusItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên", "example": "U0000194" }, "status": { "type": "string", "description": "Trạng thái tài khoản: ACTIVE, INACTIVE", "example": "ACTIVE", "enum": ["ACTIVE", "INACTIVE"] } }, "required": ["userCode", "status"] },
         "ExternalUpdateStatusRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật trạng thái", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUpdateStatusItem" } } }, "required": ["users"] },
         "ExternalMeviReferralOptionItem": { "type": "object", "properties": { "name": { "type": "string", "description": "Họ tên người giới thiệu", "example": "Nguyễn Thị Hằng" }, "phone": { "type": "string", "description": "Số điện thoại / Mã người giới thiệu", "example": "0988918212" }, "province": { "type": "string", "description": "Tỉnh / Thành phố", "example": "Bắc Kạn" }, "commune": { "type": "string", "description": "Xã / Phường / Huyện", "example": "Na Rì" } }, "required": ["name", "phone"] },
         "ExternalUpdateMeviReferralsRequest": { "type": "object", "properties": { "referrals": { "description": "Danh sách người giới thiệu", "type": "array", "items": { "$ref": "#/components/schemas/ExternalMeviReferralOptionItem" } } }, "required": ["referrals"], "example": { "referrals": [ { "name": "Nguyễn Thị Hằng", "phone": "0988918212", "province": "Bắc Kạn", "commune": "Na Rì" }, { "name": "Nguyễn Văn A", "phone": "0912345678", "province": "Hà Nội", "commune": "Phường Dịch Vọng Hậu" }, { "name": "Trần Thị B", "phone": "0977112233", "province": "Nghệ An", "commune": "Xã Nghi Lộc" } ] } },
-        "ExternalUserMetadataUpdateItem": { "type": "object", "properties": { "phone": { "type": "string", "description": "Số điện thoại nhân sự (Truyền phone hoặc email)", "example": "0325765504" }, "email": { "type": "string", "description": "Email nhân sự (Truyền email hoặc phone)", "example": "hanguyxn@company.com" }, "referrerPhone": { "type": "string", "description": "Số điện thoại / Mã người giới thiệu", "example": "0912345678" } }, "required": ["referrerPhone"] },
-        "ExternalUpdateUserMetadataRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật người giới thiệu", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUserMetadataUpdateItem" } } }, "required": ["users"], "example": { "users": [ { "phone": "0325765504", "referrerPhone": "0912345678" }, { "email": "hanguyxn@company.com", "referrerPhone": "0988918212" }, { "phone": "0909888777", "referrerPhone": "0977112233" } ] } }
+        "ExternalUserMetadataUpdateItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên", "example": "U0000194" }, "phone": { "type": "string", "description": "Số điện thoại nhân sự", "example": "0325765504" }, "email": { "type": "string", "description": "Email nhân sự", "example": "hanguyxn@company.com" }, "referrerPhone": { "type": "string", "description": "Số điện thoại / Mã người giới thiệu", "example": "0912345678" } }, "required": ["referrerPhone"] },
+        "ExternalUpdateUserMetadataRequest": { "type": "object", "properties": { "users": { "description": "Danh sách nhân sự cần cập nhật người giới thiệu", "type": "array", "items": { "$ref": "#/components/schemas/ExternalUserMetadataUpdateItem" } } }, "required": ["users"], "example": { "users": [ { "userCode": "U0000194", "referrerPhone": "0912345678" }, { "phone": "0325765504", "referrerPhone": "0912345678" }, { "email": "hanguyxn@company.com", "referrerPhone": "0988918212" } ] } },
+        "ExternalPromoteDemoteItem": { "type": "object", "properties": { "userCode": { "type": "string", "description": "Mã nhân viên", "example": "U0000194" }, "phone": { "type": "string", "description": "Số điện thoại tài khoản", "example": "0912345678" }, "email": { "type": "string", "description": "Email tài khoản", "example": "nguyenvana@company.com" }, "action": { "type": "string", "enum": ["PROMOTE", "DEMOTE"], "description": "PROMOTE: Thêm làm NGT, DEMOTE: Loại khỏi NGT", "example": "PROMOTE" } }, "required": ["action"] },
+        "ExternalPromoteDemoteReferrersRequest": { "type": "object", "properties": { "referrers": { "description": "Danh sách tài khoản cần promote/demote làm người giới thiệu", "type": "array", "items": { "$ref": "#/components/schemas/ExternalPromoteDemoteItem" } } }, "required": ["referrers"], "example": { "referrers": [ { "userCode": "U0000194", "action": "PROMOTE" }, { "phone": "0912345678", "action": "PROMOTE" }, { "email": "nguyenvana@company.com", "action": "DEMOTE" } ] } }
       }
     }
   }
