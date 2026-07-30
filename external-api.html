@@ -157,7 +157,7 @@
         "put": {
           "operationId": "ExternalApiController_updateRoleByPhoneOrEmail",
           "summary": "Cập nhật vai trò nhân sự (Dành riêng cho MEVI)",
-          "description": "Cập nhật batch vai trò của nhân sự cho MEVI. Bản ghi khớp linh hoạt theo mã định danh tài khoản (code - SSO OIDC Claims, userCode), số điện thoại (phone) hoặc email. Gán vai trò theo các mã trong enum MeviEduRole.",
+          "description": "Cập nhật batch vai trò của nhân sự cho MEVI. Bản ghi khớp linh hoạt theo mã nhân sự (userCode), số điện thoại (phone) hoặc email. Gán vai trò theo các mã trong enum MeviEduRole.",
           "parameters": [],
           "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateRoleByPhoneOrEmailRequest" } } } },
           "responses": {
@@ -171,8 +171,8 @@
       "/v1/external/users/status": {
         "put": {
           "operationId": "ExternalApiController_updateStatus",
-          "summary": "Cập nhật trạng thái nhân sự bằng mã định danh (code / userCode)",
-          "description": "Cập nhật batch trạng thái của nhân sự theo mã định danh tài khoản (code - SSO OIDC Claims hoặc userCode).",
+          "summary": "Cập nhật trạng thái nhân sự bằng mã nhân sự",
+          "description": "Cập nhật batch trạng thái của nhân sự theo mã nhân sự (userCode).",
           "parameters": [],
           "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateStatusRequest" } } } },
           "responses": {
@@ -202,7 +202,7 @@
         "put": {
           "operationId": "ExternalApiController_updateUserMetadata",
           "summary": "Cập nhật người giới thiệu cho nhân sự",
-          "description": "Cập nhật/gán người giới thiệu (bằng referrerPhone) cho nhân sự qua mã định danh (code - SSO OIDC Claims, userCode), số điện thoại (phone) hoặc email.",
+          "description": "Cập nhật/gán người giới thiệu (bằng referrerPhone) cho nhân sự qua mã nhân sự (userCode), số điện thoại (phone) hoặc email.",
           "parameters": [],
           "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalUpdateUserMetadataRequest" } } } },
           "responses": {
@@ -217,7 +217,7 @@
         "put": {
           "operationId": "ExternalApiController_promoteDemoteReferrers",
           "summary": "Promote / Demote người giới thiệu (Thêm vào hoặc loại khỏi danh sách NGT)",
-          "description": "Chuyển tài khoản đã tồn tại trở thành Người giới thiệu (PROMOTE) hoặc loại ra khỏi danh sách người giới thiệu (DEMOTE). Khớp theo mã định danh tài khoản (code - SSO OIDC Claims, userCode), số điện thoại (phone), hoặc email.",
+          "description": "Chuyển tài khoản đã tồn tại trở thành Người giới thiệu (PROMOTE) hoặc loại ra khỏi danh sách người giới thiệu (DEMOTE). Khớp theo mã nhân sự (userCode), số điện thoại (phone), hoặc email.",
           "parameters": [],
           "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExternalPromoteDemoteReferrersRequest" } } } },
           "responses": {
